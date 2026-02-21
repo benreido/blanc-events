@@ -1,0 +1,317 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Admin Users ───────────────────────────────────────────
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  name           String?
+  hashedPassword String
+  role           String   @default("ADMIN")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// ─── Equipment ─────────────────────────────────────────────
+model EquipmentItem {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  description     String   @default("")
+  category        String
+  brand           String
+  images          String[] // URLs
+  dayRate         Float?
+  weekRate        Float?
+  contactForPrice Boolean  @default(false)
+  quantityTotal   Int      @default(1)
+  specs           Json?
+  tags            String[]
+  featured        Boolean  @default(false)
+  isActive        Boolean  @default(true)
+  sortOrder       Int      @default(0)
+
+  // ── Internal Inventory (admin-only) ──
+  ownedQuantity      Int      @default(0)
+  subhireAvailable   Boolean  @default(false)
+  subhireMax         Int      @default(0)
+  preferredSupplier  String   @default("")
+  subhireCostPerDay  Float    @default(0)
+  markupPercent      Float    @default(0)
+  leadTimeDays       Int      @default(0)
+  internalNotes      String   @default("")
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  packageItems    PackageItem[]
+  bookingLines    BookingLineItem[]
+  quoteLines      QuoteLineItem[]
+  reservations    InventoryReservation[]
+
+  @@index([category])
+  @@index([brand])
+  @@index([featured])
+  @@index([isActive])
+  @@index([slug])
+}
+
+// ─── Packages ──────────────────────────────────────────────
+model Package {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  description    String   @default("")
+  dayRate        Float?
+  contactForPrice Boolean @default(false)
+  images         String[]
+  includes       String[] // list of what's included (displayed publicly)
+  savingsNote    String   @default("") // e.g. "separately would be £240"
+  optionalAddons String[] // e.g. ["Optional DJ £60/hr"]
+  featured       Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  discountType   String   @default("NONE") // NONE | PERCENT | FIXED
+  discountValue  Float    @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  items        PackageItem[]
+  bookingLines BookingLineItem[]
+  quoteLines   QuoteLineItem[]
+
+  @@index([slug])
+  @@index([featured])
+}
+
+model PackageItem {
+  id              String        @id @default(cuid())
+  packageId       String
+  equipmentItemId String
+  quantity        Int           @default(1)
+
+  package       Package       @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  equipmentItem EquipmentItem @relation(fields: [equipmentItemId], references: [id], onDelete: Cascade)
+
+  @@unique([packageId, equipmentItemId])
+}
+
+// ─── Service Add-ons ───────────────────────────────────────
+model ServiceAddon {
+  id          String   @id @default(cuid())
+  name        String
+  description String   @default("")
+  pricingType String   // FIXED | PERCENT_OF_SUBTOTAL | PER_DAY
+  priceValue  Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  quoteServices QuoteServiceAddon[]
+  bookingServices BookingServiceAddon[]
+}
+
+// ─── Quote Requests ────────────────────────────────────────
+model QuoteRequest {
+  id              String   @id @default(cuid())
+  customerName    String
+  customerEmail   String
+  customerPhone   String   @default("")
+  company         String   @default("")
+  venue           String   @default("")
+  startDate       DateTime
+  endDate         DateTime
+  notes           String   @default("")
+  status          String   @default("QUOTE_REQUESTED") // QUOTE_REQUESTED | HOLD | AWAITING_PAYMENT | CONFIRMED | CANCELLED | EXPIRED
+  subtotal        Float    @default(0)
+  servicesTotal   Float    @default(0)
+  vatAmount       Float    @default(0)
+  total           Float    @default(0)
+  numberOfDays    Int      @default(1)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  lineItems       QuoteLineItem[]
+  serviceAddons   QuoteServiceAddon[]
+  bookingOrder    BookingOrder?
+
+  @@index([status])
+  @@index([customerEmail])
+}
+
+model QuoteLineItem {
+  id              String  @id @default(cuid())
+  quoteRequestId  String
+  equipmentItemId String?
+  packageId       String?
+  itemName        String
+  quantity        Int     @default(1)
+  dayRate         Float
+  lineTotal       Float
+
+  quoteRequest  QuoteRequest   @relation(fields: [quoteRequestId], references: [id], onDelete: Cascade)
+  equipmentItem EquipmentItem? @relation(fields: [equipmentItemId], references: [id])
+  package       Package?       @relation(fields: [packageId], references: [id])
+}
+
+model QuoteServiceAddon {
+  id             String @id @default(cuid())
+  quoteRequestId String
+  serviceAddonId String
+  serviceName    String
+  priceValue     Float
+
+  quoteRequest QuoteRequest @relation(fields: [quoteRequestId], references: [id], onDelete: Cascade)
+  serviceAddon ServiceAddon @relation(fields: [serviceAddonId], references: [id])
+}
+
+// ─── Booking Orders ────────────────────────────────────────
+model BookingOrder {
+  id                      String   @id @default(cuid())
+  quoteRequestId          String?  @unique
+  customerName            String
+  customerEmail           String
+  customerPhone           String   @default("")
+  company                 String   @default("")
+  venue                   String   @default("")
+  startDate               DateTime
+  endDate                 DateTime
+  status                  String   @default("AWAITING_PAYMENT")
+  subtotal                Float    @default(0)
+  servicesTotal           Float    @default(0)
+  discount                Float    @default(0)
+  vatAmount               Float    @default(0)
+  total                   Float    @default(0)
+  depositAmount           Float    @default(0)
+  amountPaid              Float    @default(0)
+  paymentMode             String   @default("DEPOSIT") // DEPOSIT | FULL
+  numberOfDays            Int      @default(1)
+  stripePaymentIntentId   String?
+  stripeCheckoutSessionId String?
+  notes                   String   @default("")
+
+  // ── Internal margin tracking (admin-only) ──
+  subhireTotalCost        Float    @default(0)
+  ownedEquipmentValue     Float    @default(0)
+  grossMargin             Float    @default(0)
+  netMargin               Float    @default(0)
+  subhireRequired         Boolean  @default(false)
+  subhireAlert            String   @default("")
+
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  quoteRequest  QuoteRequest?  @relation(fields: [quoteRequestId], references: [id])
+  lineItems     BookingLineItem[]
+  serviceAddons BookingServiceAddon[]
+  reservations  InventoryReservation[]
+
+  @@index([status])
+  @@index([customerEmail])
+  @@index([stripePaymentIntentId])
+}
+
+model BookingLineItem {
+  id              String  @id @default(cuid())
+  bookingOrderId  String
+  equipmentItemId String?
+  packageId       String?
+  itemName        String
+  quantity        Int     @default(1)
+  dayRate         Float
+  lineTotal       Float
+
+  // ── Internal subhire tracking (admin-only) ──
+  ownedQtyUsed    Int     @default(0)
+  subhireQtyNeeded Int    @default(0)
+  subhireCostPerDay Float @default(0)
+  subhireTotalCost  Float @default(0)
+
+  bookingOrder  BookingOrder    @relation(fields: [bookingOrderId], references: [id], onDelete: Cascade)
+  equipmentItem EquipmentItem? @relation(fields: [equipmentItemId], references: [id])
+  package       Package?       @relation(fields: [packageId], references: [id])
+}
+
+model BookingServiceAddon {
+  id             String @id @default(cuid())
+  bookingOrderId String
+  serviceAddonId String
+  serviceName    String
+  priceValue     Float
+
+  bookingOrder BookingOrder @relation(fields: [bookingOrderId], references: [id], onDelete: Cascade)
+  serviceAddon ServiceAddon @relation(fields: [serviceAddonId], references: [id])
+}
+
+// ─── Inventory Reservations ────────────────────────────────
+model InventoryReservation {
+  id               String    @id @default(cuid())
+  bookingOrderId   String
+  equipmentItemId  String
+  quantityReserved Int
+  startDate        DateTime
+  endDate          DateTime
+  status           String    @default("HOLD") // HOLD | CONFIRMED | CANCELLED | EXPIRED
+  expiresAt        DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  bookingOrder  BookingOrder  @relation(fields: [bookingOrderId], references: [id], onDelete: Cascade)
+  equipmentItem EquipmentItem @relation(fields: [equipmentItemId], references: [id])
+
+  @@index([equipmentItemId, startDate, endDate])
+  @@index([status])
+  @@index([expiresAt])
+}
+
+// ─── Enquiries ─────────────────────────────────────────────
+model Enquiry {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String   @default("")
+  company   String   @default("")
+  subject   String   @default("")
+  message   String
+  status    String   @default("NEW") // NEW | READ | REPLIED | ARCHIVED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
+
+// ─── Site Content (light CMS) ──────────────────────────────
+model SiteContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  type      String   @default("TEXT") // TEXT | HTML | JSON | IMAGE
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ─── Testimonials ──────────────────────────────────────────
+model Testimonial {
+  id          String   @id @default(cuid())
+  name        String
+  role        String?  // e.g. "Wedding Client"
+  company     String?  // e.g. "Manchester Town Hall"
+  eventType   String?  // e.g. "Wedding" or "Corporate"
+  quote       String
+  rating      Int      @default(5)
+  avatarUrl   String?
+  featured    Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([featured])
+  @@index([isActive])
+}

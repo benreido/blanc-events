@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hire Hub | Professional AV Equipment Rental</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#123A2F",
+                        "accent": "#1F5C4B",
+                        "dark-accent": "#0B241D",
+                        "background-light": "#ffffff",
+                        "background-dark": "#f8fafc",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }</script>
+<style>        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-category {
+            background-color: rgba(31, 92, 75, 0.1);
+            border-left: 4px solid #1F5C4B;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1F5C4B/30;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1F5C4B;
+        }</style>
+</head>
+<body class="bg-white font-display text-slate-900 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
+<div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex h-16 items-center justify-between gap-4">
+<div class="flex items-center gap-8">
+<a class="flex items-center gap-2 group" href="#">
+<div class="p-1.5 rounded-lg text-white bg-[#1F5C4B]">
+<span class="material-symbols-outlined block">layers</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-slate-900">Hire<span class="text-[#123A2F]">Hub</span></h1>
+</a>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium text-[#123A2F]" href="#">Hire Catalogue</a>
+<a class="text-sm font-medium text-slate-600 hover:text-primary transition-colors" href="#">Services</a>
+<a class="text-sm font-medium text-slate-600 hover:text-primary transition-colors" href="#">Past Projects</a>
+<a class="text-sm font-medium text-slate-600 hover:text-primary transition-colors" href="#">Contact</a>
+</nav>
+</div>
+<div class="flex-1 max-w-md hidden lg:block">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+<input class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary focus:border-transparent transition-all border-[#1F5C4B]/50" placeholder="Search equipment (e.g. Astera, Shure, Moving Heads)..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+<button class="relative p-2 rounded-lg hover:bg-primary/20 transition-colors text-[#123A2F] bg-[#1F5C4B]/10">
+<span class="material-symbols-outlined">shopping_basket</span>
+<span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold text-white leading-none bg-[#1F5C4B]">3</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto flex gap-8 px-4 sm:px-6 lg:px-8 py-8">
+<!-- Sidebar Filters -->
+<aside class="w-64 shrink-0 hidden md:block">
+<div class="sticky top-24 flex flex-col gap-8">
+<!-- Categories -->
+<div>
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Categories</h3>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium active-category text-[#123A2F]" href="#">
+<span class="material-symbols-outlined text-xl">lightbulb</span>
+                            Lighting
+                        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">speaker</span>
+                            Audio
+                        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">piano</span>
+                            Backline
+                        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">air</span>
+                            Effects
+                        </a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">video_camera_front</span>
+                            Video &amp; LED
+                        </a>
+</div>
+</div>
+<!-- Brand Filters -->
+<div>
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Popular Brands</h3>
+<div class="flex flex-col gap-3"><label class="relative flex items-center group cursor-pointer">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:border-[#1F5C4B] transition-all peer-checked:bg-[#1F5C4B]/10 peer-checked:border-[#1F5C4B]">
+<span class="text-sm font-medium text-slate-700 peer-checked:text-[#123A2F]">Astera</span>
+<span class="material-symbols-outlined text-[#1F5C4B] opacity-0 peer-checked:opacity-100 text-lg">check</span>
+</div>
+</label>
+<label class="relative flex items-center group cursor-pointer">
+<input class="peer sr-only" type="checkbox"/>
+<div class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:border-[#1F5C4B] transition-all peer-checked:bg-[#1F5C4B]/10 peer-checked:border-[#1F5C4B]">
+<span class="text-sm font-medium text-slate-700 peer-checked:text-[#123A2F]">L-Acoustics</span>
+<span class="material-symbols-outlined text-[#1F5C4B] opacity-0 peer-checked:opacity-100 text-lg">check</span>
+</div>
+</label>
+<label class="relative flex items-center group cursor-pointer">
+<input class="peer sr-only" type="checkbox"/>
+<div class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:border-[#1F5C4B] transition-all peer-checked:bg-[#1F5C4B]/10 peer-checked:border-[#1F5C4B]">
+<span class="text-sm font-medium text-slate-700 peer-checked:text-[#123A2F]">MA Lighting</span>
+<span class="material-symbols-outlined text-[#1F5C4B] opacity-0 peer-checked:opacity-100 text-lg">check</span>
+</div>
+</label>
+<label class="relative flex items-center group cursor-pointer">
+<input class="peer sr-only" type="checkbox"/>
+<div class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:border-[#1F5C4B] transition-all peer-checked:bg-[#1F5C4B]/10 peer-checked:border-[#1F5C4B]">
+<span class="text-sm font-medium text-slate-700 peer-checked:text-[#123A2F]">Shure</span>
+<span class="material-symbols-outlined text-[#1F5C4B] opacity-0 peer-checked:opacity-100 text-lg">check</span>
+</div>
+</label>
+<label class="relative flex items-center group cursor-pointer">
+<input class="peer sr-only" type="checkbox"/>
+<div class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:border-[#1F5C4B] transition-all peer-checked:bg-[#1F5C4B]/10 peer-checked:border-[#1F5C4B]">
+<span class="text-sm font-medium text-slate-700 peer-checked:text-[#123A2F]">Martin Professional</span>
+<span class="material-symbols-outlined text-[#1F5C4B] opacity-0 peer-checked:opacity-100 text-lg">check</span>
+</div>
+</label>
+<label class="relative flex items-center group cursor-pointer">
+<input class="peer sr-only" type="checkbox"/>
+<div class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:border-[#1F5C4B] transition-all peer-checked:bg-[#1F5C4B]/10 peer-checked:border-[#1F5C4B]">
+<span class="text-sm font-medium text-slate-700 peer-checked:text-[#123A2F]">Sennheiser</span>
+<span class="material-symbols-outlined text-[#1F5C4B] opacity-0 peer-checked:opacity-100 text-lg">check</span>
+</div>
+</label></div>
+</div>
+<!-- Availability -->
+<div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+<h4 class="text-sm font-semibold mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg text-[#123A2F]">verified</span>
+                        Live Availability
+                    </h4>
+<p class="text-xs text-slate-500 leading-relaxed mb-4">Log in to view real-time stock levels for your rental dates.</p>
+<button class="w-full py-2 bg-slate-200 dark:bg-slate-700 rounded-lg text-sm font-semibold hover:bg-primary transition-all hover:text-black">Sign In</button>
+</div>
+</div>
+</aside>
+<!-- Product Grid Content -->
+<section class="flex-1">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+<div>
+<h2 class="text-2xl font-bold text-slate-900">Professional Lighting</h2>
+<p class="text-sm text-slate-500">Showing 42 products in LED &amp; Moving Heads</p>
+</div>
+<div class="flex items-center gap-2 bg-slate-50 p-1 rounded-lg border border-slate-100">
+<button class="px-4 py-1.5 text-xs font-semibold rounded-md bg-white dark:bg-slate-700 shadow-sm">Popular</button>
+<button class="px-4 py-1.5 text-xs font-semibold rounded-md hover:bg-white dark:hover:bg-slate-700 transition-all">Price: Low to High</button>
+<button class="px-4 py-1.5 text-xs font-semibold rounded-md hover:bg-white dark:hover:bg-slate-700 transition-all">Newest</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Product Card 1 -->
+<div class="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-primary/50 transition-all hover:shadow-xl shadow-sm">
+<div class="relative aspect-[4/3] bg-slate-50 overflow-hidden">
+<img alt="Professional stage lighting fixture" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Professional stage lighting fixture on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC395_INfDv4eYU8o8B0PnSymETSZY_skfR0b1gJ8zxijZI_g8cWnEbLPL-mq_tnw4JEXRSOrFD8OzV9JyrcienjyJ7ksGLVlrol06DwCE3WlVGp04_KkwwT6usC-7lcqyF4qaZ7BNv1hOyeGpidxMKsph2naJfab5ldt9XLQYsAyCdNySYBCHkFbLWepaQ8GdokruW7glrCl-P3jJprawQZ2TxvaaDVnQn3zLJp2ESpkTSjv0tZepMfd9UZMrXa_zD4RjoMO_UEip2"/>
+<div class="absolute top-3 right-3 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider bg-[#1F5C4B]">Top Choice</div>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-medium text-[#123A2F]">Astera</span>
+<span class="text-xs text-slate-400">#LT-00142</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors text-[#123A2F]">Titan Tube (Set of 8)</h3>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">72W Output</span>
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">IP65 Waterproof</span>
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">CRI 96+</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 pt-4">
+<div>
+<span class="text-xl font-bold text-slate-900">£165.00</span>
+<span class="text-xs text-slate-500 font-medium">/day</span>
+</div>
+<button class="flex items-center justify-center gap-2 hover:bg-primary/90 text-black px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 bg-[#1F5C4B] shadow-[#1F5C4B]/20">
+<span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                Add
+                            </button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-primary/50 transition-all hover:shadow-xl shadow-sm">
+<div class="relative aspect-[4/3] bg-slate-50 overflow-hidden">
+<img alt="Professional moving head light" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Professional moving head light fixture profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_nWA83e92MNnsxwmMrbbiI6Ly1Qjz_VHv0ZG4haFJqpN3oPoZ7Ps4qDgxuLpckZ8i7lr84VCrMq0PM2WxW7kLphbvMHpU0LqM2SnrRzkg3OiZk2q_ftt3GMjJADQ62-oSHaDaQpqH98-WTu_uRkvbcyZUF7zEhUpmGduoP-LbGNChQ2QMzgFfqCkEbAaFgHIyKdusIXFiHmWwzczy_9Zo5cUy_L5RaIg0yyHHwWiCfjdGYN6NRc59yLq2IJj1AgQODNSQizZ4I3xJ"/>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-medium text-[#123A2F]">Martin</span>
+<span class="text-xs text-slate-400">#LT-00871</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors text-[#123A2F]">MAC Quantum Profile</h3>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">LED Engine</span>
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">12700 Lumens</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 pt-4">
+<div>
+<span class="text-xl font-bold text-slate-900">£85.00</span>
+<span class="text-xs text-slate-500 font-medium">/day</span>
+</div>
+<button class="flex items-center justify-center gap-2 hover:bg-primary/90 text-black px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 bg-[#1F5C4B] shadow-[#1F5C4B]/20">
+<span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                Add
+                            </button>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-primary/50 transition-all hover:shadow-xl shadow-sm">
+<div class="relative aspect-[4/3] bg-slate-50 overflow-hidden">
+<img alt="Lighting control console" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Modern professional lighting control desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0iw8dtt8K2tJpGf7sd2jwWx_pqkXP__Deba9rFoclWRL7YnO7uKzYR5hZ0fcsCX5sn-Cax6A7GUunTBbKGo5ArTGKCxmgb7ZzVnsaymsPCj12f9DiYxFBcYLVLIzXJj8dO0XinjPK9a1C-DOBbBEYF8O9kNRn1-nO5KGplGUufin6r2haQ11r-k2LJpZwO6i_XywRYGwKzqye1KqHj6Dm21L-EjjXeqBiq0CiJcZ03K7KMMVPGYl7oeva0W_sFkqS7iXvxZjLpZpb"/>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-medium text-[#123A2F]">MA Lighting</span>
+<span class="text-xs text-slate-400">#LT-00003</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors text-[#123A2F]">grandMA3 Compact XT</h3>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">4096 Parameters</span>
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">Multitouch</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 pt-4">
+<div>
+<span class="text-xl font-bold text-slate-900">£240.00</span>
+<span class="text-xs text-slate-500 font-medium">/day</span>
+</div>
+<button class="flex items-center justify-center gap-2 hover:bg-primary/90 text-black px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 bg-[#1F5C4B] shadow-[#1F5C4B]/20">
+<span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                Add
+                            </button>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-primary/50 transition-all hover:shadow-xl shadow-sm">
+<div class="relative aspect-[4/3] bg-slate-50 overflow-hidden">
+<img alt="Large scale subwoofer speaker" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Professional large scale subwoofer speaker box" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJCB0TsnPi0hGcL8dqrJKV2lfzxS9oqIa9TWirwaT0-bGEgtXglYQy5n1FjGZzxxEcsspa1eV5qZtRG1DO6E7mJ_i3ix646i199ea8aVW0hh96tuwXilc6Cz-eq7jt5nm9yofY9scx9n5x5Xs0PwVv29fDtFUhSJuU5VL4Ljylad6is5NN3cizvZl4e99ua9Trc6dv1GAFkxzemZZnqA_S3-92nkzu165gmTUWT2Yfh_2c9tDisAHbolamttyCpuxYCEKJ9mZhCT6z"/>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-medium text-[#123A2F]">L-Acoustics</span>
+<span class="text-xs text-slate-400">#AU-00219</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors text-[#123A2F]">KS28 Subwoofer</h3>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">Dual 18"</span>
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">143dB Peak</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 pt-4">
+<div>
+<span class="text-xl font-bold text-slate-900">£55.00</span>
+<span class="text-xs text-slate-500 font-medium">/day</span>
+</div>
+<button class="flex items-center justify-center gap-2 hover:bg-primary/90 text-black px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 bg-[#1F5C4B] shadow-[#1F5C4B]/20">
+<span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                Add
+                            </button>
+</div>
+</div>
+</div>
+<!-- Product Card 5 -->
+<div class="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-primary/50 transition-all hover:shadow-xl shadow-sm">
+<div class="relative aspect-[4/3] bg-slate-50 overflow-hidden">
+<img alt="Professional wireless microphone" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Professional wireless microphone with handheld transmitter" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAowoTFPsEQAIEsFDDTxTJ36egveAh7ZD_-8e6y7V6P6VqtSsxuSr-SNLJbsYac2obJr23GboQPw4qOHewAkHCNxTL9eEIBl-TRDU8hqHr0f4krZ1hY9CXYaJ-3E5Sia6Aol44GT9HPg_ZPcyVO10jJujZJe06V_ZVUwkbP0muefIiNGNU9sdIoiuhXstbuf9o6sd0_0QhPwisLmxIyBlkn2pYjxLN9QILz8lPaMoElQGfSKxM9soaIB8Kerkqh_-hFMsVBHTuVJp3"/>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-medium text-[#123A2F]">Shure</span>
+<span class="text-xs text-slate-400">#AU-00104</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors text-[#123A2F]">Axient Digital AD2/SM58</h3>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">Digital Wireless</span>
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">High Density Mode</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 pt-4">
+<div>
+<span class="text-xl font-bold text-slate-900">£45.00</span>
+<span class="text-xs text-slate-500 font-medium">/day</span>
+</div>
+<button class="flex items-center justify-center gap-2 hover:bg-primary/90 text-black px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 bg-[#1F5C4B] shadow-[#1F5C4B]/20">
+<span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                Add
+                            </button>
+</div>
+</div>
+</div>
+<!-- Product Card 6 -->
+<div class="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-primary/50 transition-all hover:shadow-xl shadow-sm">
+<div class="relative aspect-[4/3] bg-slate-50 overflow-hidden">
+<img alt="Smoke and haze machine" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Stage haze machine for atmospheric effects" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgcWH3IhMSYk5RVObMLIb0uWli8CQVHug1jIfZLMbmv5J4XJQr0ojHppYVvxIWqQ8MAwr4ms46dDFPDo_1H3n5RSj_bqj5Dvq-JKqheuSlGE_iGNUzRepfxJ78gu4flwdSmbfzUnHVCxooRKOVQ9IOsdCFMOVvXZ8Hze5OmRMlyuTyasNAQIfgfR0uoo8ar4G3ycdfcXmne73_l1txSeTYyhTDUYZ-78FVOEfRoOIJHbC2h9vnA3LDPKvzjqFSybdL3fyoc-PbL95J"/>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-medium text-[#123A2F]">Smoke Factory</span>
+<span class="text-xs text-slate-400">#EF-00055</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors text-[#123A2F]">Tour Hazer II</h3>
+<div class="flex flex-wrap gap-2 mb-6">
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">CO2 Free</span>
+<span class="px-2 py-1 bg-slate-50 rounded text-[10px] text-slate-500 uppercase font-bold tracking-tight border border-slate-100">Amptown Flightcase</span>
+</div>
+<div class="flex items-center justify-between border-t border-slate-100 pt-4">
+<div>
+<span class="text-xl font-bold text-slate-900">£35.00</span>
+<span class="text-xs text-slate-500 font-medium">/day</span>
+</div>
+<button class="flex items-center justify-center gap-2 hover:bg-primary/90 text-black px-4 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-primary/20 bg-[#1F5C4B] shadow-[#1F5C4B]/20">
+<span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                Add
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="flex justify-center items-center gap-2 mt-12 mb-8">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 hover:border-primary transition-all border-[#1F5C4B]/50">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg text-white font-bold bg-[#1F5C4B]">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 hover:border-primary transition-all border-[#1F5C4B]/50">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 hover:border-primary transition-all border-[#1F5C4B]/50">3</button>
+<span class="text-slate-500 px-2">...</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 hover:border-primary transition-all border-[#1F5C4B]/50">14</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-800 hover:border-primary transition-all border-[#1F5C4B]/50">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Sticky Enquiry Basket Summary -->
+<div class="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-4 pointer-events-none">
+<div class="pointer-events-auto group">
+<div class="flex items-center gap-4 bg-white p-2 pr-6 rounded-2xl shadow-2xl border border-slate-100 animate-fade-in-up backdrop-blur-xl">
+<div class="relative p-3 text-white rounded-xl bg-[#1F5C4B]">
+<span class="material-symbols-outlined text-2xl">pending_actions</span>
+<span class="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 dark:bg-white text-[12px] font-bold text-white dark:text-primary border-2 border-white dark:border-slate-800">3</span>
+</div>
+<div class="hidden sm:block">
+<p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-0.5">Rental Enquiry</p>
+<p class="text-sm font-bold text-slate-900">Review Basket Summary</p>
+<p class="text-xs text-slate-400">Estimated: £365.00 ex. VAT</p>
+</div>
+<button class="ml-4 px-6 py-2.5 rounded-lg text-sm font-bold text-black hover:bg-primary/90 transition-all shadow-lg shadow-primary/30 bg-[#1F5C4B] shadow-[#1F5C4B]/20">
+                    Get Quote
+                </button>
+</div>
+</div>
+</div>
+<!-- Mobile Footer Navigation (Quick Links) -->
+<div class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-slate-200 p-2 flex justify-around z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+<button class="flex flex-col items-center gap-1 p-2 text-[#123A2F]">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 text-slate-500">
+<span class="material-symbols-outlined">filter_list</span>
+<span class="text-[10px] font-bold">Filters</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 text-slate-500">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[10px] font-bold">Search</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 text-slate-500">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[10px] font-bold">Profile</span>
+</button>
+</div>
+</body></html>

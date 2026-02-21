@@ -1,0 +1,7 @@
+# .gitignore
+node_modules
+.next
+*.tsbuildinfo
+.env
+.env.local
+.vercel
