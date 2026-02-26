@@ -6,9 +6,9 @@ export const siteConfig = {
     vatRate: parseFloat(process.env.VAT_RATE || "0.20"),
     depositPercent: parseFloat(process.env.DEPOSIT_PERCENT || "0.25"),
     holdTtlMinutes: parseInt(process.env.HOLD_TTL_MINUTES || "30", 10),
-    contactEmail: "hello@blanc.events",
-    contactPhone: "0161 123 4567",
-    address: "123 Event Parkway, Manchester M1",
+    contactEmail: "hello@blanc-events.co.uk",
+    contactPhone: "07584192578",
+    address: "19 Cheetham hill road, M4 4FY",
     colors: {
         primary: "#1F5C4B",
         deepGreen: "#123A2F",

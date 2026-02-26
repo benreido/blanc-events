@@ -484,6 +484,46 @@ async function main() {
     ]);
     console.log("✅ Created testimonials");
 
+    console.log("✅ Created testimonials");
+
+    // ─── DJ Services ───
+    await Promise.all([
+        prisma.dJService.upsert({
+            where: { id: "dj-premium-wedding" },
+            update: {},
+            create: {
+                id: "dj-premium-wedding",
+                name: "Premium Wedding DJ",
+                description: "Expert wedding DJ with a vast open-format library to keep all generations dancing.",
+                basePrice: 500,
+                isActive: true,
+            },
+        }),
+        prisma.dJService.upsert({
+            where: { id: "dj-corporate" },
+            update: {},
+            create: {
+                id: "dj-corporate",
+                name: "Corporate Event DJ",
+                description: "Professional background and upbeat sets tailored to brand activations and corporate galas.",
+                basePrice: 650,
+                isActive: true,
+            },
+        }),
+        prisma.dJService.upsert({
+            where: { id: "dj-club-specialist" },
+            update: {},
+            create: {
+                id: "dj-club-specialist",
+                name: "Club & House Specialist",
+                description: "Underground house and techno specialist for late-night private parties.",
+                basePrice: 400,
+                isActive: true,
+            },
+        }),
+    ]);
+    console.log("✅ Created DJ services");
+
     console.log("\n🎉 Seed complete!");
 }
 

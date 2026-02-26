@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en" className="light">
+        <html lang="en" className="light" suppressHydrationWarning>
             <head>
                 <link
-                    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+                    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
                     rel="stylesheet"
                 />
                 <link
@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     rel="stylesheet"
                 />
             </head>
-            <body className="bg-white text-slate-900 font-[Inter,sans-serif] selection:bg-[#1F5C4B]/30">
+            <body className="bg-[#F9F7F5] text-slate-800 font-[Inter,sans-serif] selection:bg-[#1F5C4B]/30 antialiased">
                 <CartProvider>{children}</CartProvider>
             </body>
         </html>

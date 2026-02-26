@@ -20,10 +20,10 @@ export const authOptions: AuthOptions = {
 
                 if (!user) return null;
 
-                const valid = await bcrypt.compare(credentials.password, user.hashedPassword);
+                const valid = await bcrypt.compare(credentials.password, user.hashedPassword || "");
                 if (!valid) return null;
 
-                return { id: user.id, email: user.email, name: user.name };
+                return { id: user.id, email: user.email, name: user.name, role: user.role };
             },
         }),
     ],
@@ -31,12 +31,16 @@ export const authOptions: AuthOptions = {
     pages: { signIn: "/admin/login" },
     callbacks: {
         async jwt({ token, user }) {
-            if (user) { token.id = user.id; }
+            if (user) {
+                token.id = user.id;
+                token.role = (user as any).role;
+            }
             return token;
         },
         async session({ session, token }) {
             if (session.user) {
                 (session.user as Record<string, unknown>).id = token.id;
+                (session.user as Record<string, unknown>).role = token.role;
             }
             return session;
         },

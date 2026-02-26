@@ -1,5 +1,16 @@
 import { prisma } from "@/lib/prisma";
 
+type ItemRef = {
+    equipmentItemId: string | null;
+    packageId: string | null;
+    quantity: number;
+    dayRate: number;
+    lineTotal: number;
+    type?: "eq" | "pkg";
+    eqId?: string | null;
+    pkgId?: string | null;
+    pkgItems?: { equipmentItemId: string; quantity: number }[];
+};
 export async function calculateOrderMargin(
     lineItems: { equipmentItemId: string | null; packageId: string | null; quantity: number; dayRate: number; lineTotal: number }[],
     numberOfDays: number,
@@ -13,7 +24,7 @@ export async function calculateOrderMargin(
 
     // Aggregate equipment
     const equipmentTally: Record<string, number> = {};
-    const itemRefs: any[] = []; // to store back-references
+    const itemRefs: ItemRef[] = []; // to store back-references
 
     for (const li of lineItems) {
         if (li.equipmentItemId) {
@@ -49,7 +60,7 @@ export async function calculateOrderMargin(
         let liOwnedValueTotal = 0;
 
         if (li.type === "eq") {
-            const eq = eqMap.get(li.eqId);
+            const eq = eqMap.get(li.eqId || "");
             if (eq) {
                 const needed = li.quantity;
                 const ownedAvailable = Math.min(needed, Math.max(0, remainingOwned[eq.id] || 0));
@@ -70,7 +81,7 @@ export async function calculateOrderMargin(
             }
         } else if (li.type === "pkg") {
             // For packages, aggregate the subhire needed for all components
-            for (const pi of li.pkgItems) {
+            for (const pi of li.pkgItems || []) {
                 const eq = eqMap.get(pi.equipmentItemId);
                 if (eq) {
                     const needed = pi.quantity * li.quantity;
@@ -110,16 +121,11 @@ export async function calculateOrderMargin(
     }
 
     // Gross margin = Total Revenue - Direct Costs (Subhire)
-    // Here revenue is total (or we could use subtotal). The user specifies "Gross margin"
-    // Let's use standard margin: (Revenue - Cost) / Revenue
-    // Revenue ex VAT is usually better, but let's just do orderTotal (or maybe orderTotal - vatAmount)
-    // If orderTotal is 0, margin is 0.
     const revenue = orderTotal;
     const grossMarginNum = revenue > 0 ? ((revenue - subhireTotalCost) / revenue) * 100 : 0;
 
-    // Net margin would subtract other internal costs like technician/delivery, but we don't have hard costs for services strictly defined.
-    // We'll set net margin to the same as gross margin for now, or just gross margin minus service costs if any service takes 100%.
-    const netMarginNum = grossMarginNum;
+    // Net margin subtracts servicesTotal as an operation cost (dj/addons)
+    const netMarginNum = revenue > 0 ? ((revenue - subhireTotalCost - servicesTotal) / revenue) * 100 : 0;
 
     return {
         processedLineItems,

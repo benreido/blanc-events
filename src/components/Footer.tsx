@@ -45,10 +45,10 @@ export default function Footer() {
                     <div>
                         <h5 className="font-bold text-slate-900 uppercase tracking-widest text-xs mb-8">Contact</h5>
                         <ul className="space-y-4">
-                            <li className="text-slate-400 text-sm">Manchester City Centre</li>
-                            <li className="text-slate-400 text-sm">Salford, M3 5JZ</li>
-                            <li className="text-slate-400 text-sm">hello@blanc.events</li>
-                            <li className="text-slate-400 text-sm">0161 000 0000</li>
+                            <li className="text-slate-400 text-sm">19 Cheetham hill road</li>
+                            <li className="text-slate-400 text-sm">M4 4FY</li>
+                            <li className="text-slate-400 text-sm">hello@blanc-events.co.uk</li>
+                            <li className="text-slate-400 text-sm">07584192578</li>
                         </ul>
                     </div>
                 </div>

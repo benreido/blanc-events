@@ -19,7 +19,7 @@ export async function GET() {
 
     const bookings = await prisma.bookingOrder.findMany({
         orderBy: { createdAt: "desc" },
-        include: { lineItems: true },
+        include: { lineItems: true, invoice: true, djServices: true, serviceAddons: true },
     });
     return NextResponse.json({ bookings });
 }

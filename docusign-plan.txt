@@ -1,0 +1,4 @@
+1. Implement IdentityDocument model for ID uploads.
+2. Implement Agreement model for signed contracts.
+3. Hook these up to BookingOrder or User so that both guest and registered flows are supported.
+4. Implement DocuSign integrations or equivalent digital signature flows.

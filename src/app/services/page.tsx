@@ -60,6 +60,19 @@ export default async function ServicesPage() {
                     </div>
                 </section>
 
+                <section className="py-20 px-6 bg-[#1F5C4B] text-white">
+                    <div className="max-w-4xl mx-auto text-center">
+                        <span className="material-symbols-outlined text-6xl text-white/50 mb-6">headphones</span>
+                        <h2 className="text-4xl font-black tracking-tighter mb-6">Premium DJ Services</h2>
+                        <p className="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
+                            Elevate your event with our curated roster of professional DJs. From elegant weddings to late-night club sets, we provide expert sound and the perfect atmosphere.
+                        </p>
+                        <Link href="/book" className="inline-block px-10 py-4 bg-white text-[#1F5C4B] font-black rounded-xl uppercase tracking-[0.2em] text-sm hover:bg-slate-100 transition-all shadow-xl">
+                            Book a DJ
+                        </Link>
+                    </div>
+                </section>
+
                 {/* Service Add-ons from DB */}
                 {services.length > 0 && (
                     <section className="py-20 px-6 bg-slate-50">
@@ -76,7 +89,7 @@ export default async function ServicesPage() {
                                                 {svc.pricingType === "PERCENT_OF_SUBTOTAL" && `${svc.priceValue}% of subtotal`}
                                                 {svc.pricingType === "PER_DAY" && `${formatCurrency(svc.priceValue)}/day`}
                                             </span>
-                                            <Link href="/contact" className="text-xs font-bold text-[#1F5C4B] uppercase tracking-widest">Add</Link>
+                                            <Link href="/book" className="text-xs font-bold text-[#1F5C4B] uppercase tracking-widest">Add</Link>
                                         </div>
                                     </div>
                                 ))}

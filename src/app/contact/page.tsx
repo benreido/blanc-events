@@ -65,7 +65,7 @@ function ContactForm() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2 block">Phone</label>
-                    <input {...register("phone")} className="w-full bg-white border border-slate-200 rounded-lg py-3 px-4 text-sm focus:ring-2 focus:ring-[#1F5C4B] focus:border-transparent transition-all" placeholder="0161 000 0000" />
+                    <input {...register("phone")} className="w-full bg-white border border-slate-200 rounded-lg py-3 px-4 text-sm focus:ring-2 focus:ring-[#1F5C4B] focus:border-transparent transition-all" placeholder="07584192578" />
                 </div>
                 <div>
                     <label className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2 block">Company</label>
@@ -123,9 +123,9 @@ export default function ContactPage() {
                             </div>
                             <div className="space-y-8">
                                 {[
-                                    { icon: "location_on", title: "Visit Us", lines: ["Manchester City Centre", "Salford, M3 5JZ"] },
-                                    { icon: "email", title: "Email", lines: ["hello@blanc.events", "Response within 24 hours"] },
-                                    { icon: "call", title: "Call Us", lines: ["0161 000 0000", "Mon–Fri 9am–6pm"] },
+                                    { icon: "location_on", title: "Visit Us", lines: ["19 Cheetham hill road", "M4 4FY"] },
+                                    { icon: "email", title: "Email", lines: ["hello@blanc-events.co.uk", "Response within 24 hours"] },
+                                    { icon: "call", title: "Call Us", lines: ["07584192578", "Mon–Fri 9am–6pm"] },
                                 ].map((c) => (
                                     <div key={c.title} className="flex gap-4">
                                         <div className="w-12 h-12 bg-[#1F5C4B]/10 rounded-lg flex items-center justify-center shrink-0">

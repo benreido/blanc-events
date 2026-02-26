@@ -105,7 +105,7 @@ export default async function PackagesPage() {
                                                 </div>
                                             )}
                                             <Link
-                                                href="/contact"
+                                                href={`/book?packageId=${pkg.id}`}
                                                 className="inline-block px-8 py-3 bg-[#1F5C4B] text-white font-bold rounded uppercase tracking-widest text-xs hover:bg-[#123A2F] transition-colors"
                                             >
                                                 Book This Package

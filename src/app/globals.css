@@ -5,20 +5,48 @@
   --color-deep-green: #123A2F;
   --color-dark-green: #0B241D;
   --color-accent: #1F5C4B;
-  --font-family-display: "Inter", sans-serif;
+
+  --font-family-sans: "Inter", sans-serif;
+  --font-family-display: "Outfit", sans-serif;
 }
 
 @layer base {
   body {
+    font-family: var(--font-family-sans);
+    color: #1e293b;
+    /* Softer slate-800 instead of slate-900 */
+    background-color: #F9F7F5;
+    /* Warmer default background */
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .font-display {
     font-family: var(--font-family-display);
+  }
+}
+
+@layer utilities {
+  .shadow-brand-sm {
+    box-shadow: 0 4px 14px -4px rgba(31, 92, 75, 0.15);
+  }
+
+  .shadow-brand-lg {
+    box-shadow: 0 20px 40px -10px rgba(31, 92, 75, 0.2);
   }
 }
 
 /* Glass navigation */
 .glass-nav {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
 }
 
 /* Hero gradient overlay */

@@ -13,10 +13,12 @@ function AdminSidebar() {
         { href: "/admin", icon: "dashboard", label: "Dashboard" },
         { href: "/admin/equipment", icon: "speaker", label: "Equipment" },
         { href: "/admin/packages", icon: "inventory_2", label: "Packages" },
-        { href: "/admin/services", icon: "engineering", label: "Services" },
+        { href: "/admin/dj-services", icon: "headphones", label: "DJ Services" },
+        { href: "/admin/services", icon: "engineering", label: "Add-ons" },
         { href: "/admin/testimonials", icon: "format_quote", label: "Testimonials" },
         { href: "/admin/bookings", icon: "event_available", label: "Bookings" },
         { href: "/admin/quotes", icon: "request_quote", label: "Quotes" },
+        { href: "/admin/invoices", icon: "receipt_long", label: "Invoices" },
         { href: "/admin/enquiries", icon: "mail", label: "Enquiries" },
     ];
 

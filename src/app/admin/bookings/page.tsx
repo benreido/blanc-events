@@ -10,6 +10,9 @@ interface Booking {
     subhireAlert: string; subhireRequired: boolean; grossMargin: number;
     ownedEquipmentValue: number; subhireTotalCost: number; netMargin: number;
     lineItems: Array<{ itemName: string; quantity: number; lineTotal: number }>;
+    djServices?: Array<{ serviceName: string; priceValue: number }>;
+    serviceAddons?: Array<{ serviceName: string; priceValue: number }>;
+    invoice: { id: string; invoiceNumber: string } | null;
 }
 
 const statusColors: Record<string, string> = {
@@ -81,14 +84,32 @@ export default function AdminBookingsPage() {
                                     <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusColors[b.status] || "bg-slate-100"}`}>{b.status.replace(/_/g, " ")}</span>
                                     <p className="text-xl font-black text-[#123A2F] mt-2">{formatCurrency(b.total)}</p>
                                     {b.amountPaid > 0 && <p className="text-xs text-green-600">Paid: {formatCurrency(b.amountPaid)}</p>}
+                                    {b.invoice && (
+                                        <a href={`/invoice/${b.id}`} target="_blank" rel="noreferrer" className="flex items-center justify-end gap-1 mt-2 text-xs font-bold text-[#1F5C4B] hover:text-[#123A2F] group">
+                                            <span className="material-symbols-outlined text-[14px]">receipt_long</span>
+                                            <span className="group-hover:underline">View Invoice</span>
+                                        </a>
+                                    )}
                                 </div>
                             </div>
-                            {b.lineItems.length > 0 && (
+                            {(b.lineItems.length > 0 || (b.djServices?.length ?? 0) > 0 || (b.serviceAddons?.length ?? 0) > 0) && (
                                 <div className="bg-slate-50 rounded-lg p-3 mb-4">
                                     {b.lineItems.map((li, i) => (
-                                        <div key={i} className="flex justify-between text-sm py-1">
+                                        <div key={`li-${i}`} className="flex justify-between text-sm py-1">
                                             <span>{li.quantity}x {li.itemName}</span>
                                             <span className="font-bold">{formatCurrency(li.lineTotal)}</span>
+                                        </div>
+                                    ))}
+                                    {b.djServices?.map((dj, i) => (
+                                        <div key={`dj-${i}`} className="flex justify-between text-sm py-1 text-[#1F5C4B]">
+                                            <span>DJ Service: {dj.serviceName}</span>
+                                            <span className="font-bold">{formatCurrency(dj.priceValue)}</span>
+                                        </div>
+                                    ))}
+                                    {b.serviceAddons?.map((addon, i) => (
+                                        <div key={`ad-${i}`} className="flex justify-between text-sm py-1 text-slate-500">
+                                            <span>Add-on: {addon.serviceName}</span>
+                                            <span className="font-bold">{formatCurrency(addon.priceValue)}</span>
                                         </div>
                                     ))}
                                 </div>

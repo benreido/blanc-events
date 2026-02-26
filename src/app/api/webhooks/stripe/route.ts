@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
         const data = event.data.object as unknown as Record<string, unknown>;
         const metadata = (data.metadata || {}) as Record<string, string>;
         const bookingOrderId = metadata.bookingOrderId;
+        const invoiceId = metadata.invoiceId;
 
         if (bookingOrderId) {
             const amountPaid = typeof data.amount_total === "number"
@@ -47,6 +48,12 @@ export async function POST(req: NextRequest) {
                     data: { status: "CONFIRMED" },
                 });
 
+                // ALSO mark associated invoice as paid if it exists
+                await tx.invoice.updateMany({
+                    where: { bookingOrderId },
+                    data: { status: "PAID", paidAt: new Date(), amountPaid, balanceDue: 0 }
+                });
+
                 return order;
             });
 
@@ -64,6 +71,38 @@ export async function POST(req: NextRequest) {
                     lineTotal: li.lineTotal,
                 })),
             }).catch(console.error);
+        } else if (invoiceId) {
+            const amountPaid = typeof data.amount_total === "number"
+                ? data.amount_total / 100
+                : typeof data.amount_received === "number"
+                    ? data.amount_received / 100
+                    : 0;
+
+            const invoice = await prisma.invoice.findUnique({ where: { id: invoiceId } });
+            if (invoice) {
+                const newAmountPaid = invoice.amountPaid + amountPaid;
+                const newBalanceDue = Math.max(0, invoice.total - newAmountPaid);
+                const isPaid = newBalanceDue === 0;
+
+                await prisma.invoice.update({
+                    where: { id: invoiceId },
+                    data: {
+                        amountPaid: newAmountPaid,
+                        balanceDue: newBalanceDue,
+                        status: isPaid ? "PAID" : "PARTIALLY_PAID",
+                        paidAt: isPaid ? new Date() : undefined
+                    }
+                });
+
+                await prisma.invoicePayment.create({
+                    data: {
+                        invoiceId,
+                        amount: amountPaid,
+                        status: "SUCCESS",
+                        reference: typeof data.payment_intent === "string" ? data.payment_intent : ""
+                    }
+                });
+            }
         }
     }
 
