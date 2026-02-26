@@ -5,8 +5,9 @@ import HeroSection from "@/components/HeroSection";
 import AnimatedSection from "@/components/AnimatedSection";
 import MotionLink from "@/components/MotionLink";
 import TwoWaysSection from "@/components/TwoWaysSection";
-import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/config";
+
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
     return (

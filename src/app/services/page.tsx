@@ -6,6 +6,8 @@ import Link from "next/link";
 
 export const metadata = { title: "Services | Blanc. Events" };
 
+export const dynamic = "force-dynamic";
+
 export default async function ServicesPage() {
     let services: Array<{ id: string; name: string; description: string; pricingType: string; priceValue: number }> = [];
     try {

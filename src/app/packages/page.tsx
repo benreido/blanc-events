@@ -6,6 +6,8 @@ import Link from "next/link";
 
 export const metadata = { title: "Packages | Blanc. Events" };
 
+export const dynamic = "force-dynamic";
+
 export default async function PackagesPage() {
     let packages: Array<{
         id: string; name: string; slug: string; description: string;

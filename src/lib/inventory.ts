@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-
 type ItemRef = {
     equipmentItemId: string | null;
     packageId: string | null;
