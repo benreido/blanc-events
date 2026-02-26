@@ -62,24 +62,7 @@ export default function AboutPage() {
                     </div>
                 </section>
 
-                {/* Stats */}
-                <section className="py-20 px-6">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                            {[
-                                { value: "500+", label: "Events Delivered" },
-                                { value: "£2M+", label: "Equipment Portfolio" },
-                                { value: "98%", label: "Client Satisfaction" },
-                                { value: "24/7", label: "Technical Support" },
-                            ].map((s) => (
-                                <div key={s.label}>
-                                    <div className="text-4xl md:text-5xl font-black text-[#1F5C4B] mb-2">{s.value}</div>
-                                    <div className="text-slate-400 text-sm uppercase tracking-widest font-bold">{s.label}</div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
+
 
                 {/* CTA */}
                 <section className="py-20 px-6 bg-[#123A2F]">
