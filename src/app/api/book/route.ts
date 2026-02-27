@@ -122,7 +122,7 @@ export async function POST(req: Request) {
                 clientAddress: billingAddress,
                 dueDate: new Date(startDate.getTime() - (7 * 24 * 60 * 60 * 1000)), // 7 days before event
                 businessDetails: {
-                    name: "Blanc. Events",
+                    name: "Blanc Collective LTD",
                     address: "19 Cheetham hill road, M4 4FY",
                     email: "hello@blanc-events.co.uk",
                     phone: "07584192578"

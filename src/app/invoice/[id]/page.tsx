@@ -117,6 +117,11 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                                         <td className="py-4 text-slate-900">
                                             <span className="font-bold">{it.name}</span>
                                             {it.description && <p className="text-xs text-slate-500 mt-1">{it.description}</p>}
+                                            {it.discount > 0 && (
+                                                <p className="text-[11px] text-emerald-600 font-bold mt-1 uppercase tracking-wider">
+                                                    Discount Applied: {it.discountType === "PERCENTAGE" ? `${it.discount}%` : formatCurrency(it.discount)}
+                                                </p>
+                                            )}
                                         </td>
                                         <td className="py-4 text-slate-600 text-center">{it.quantity}</td>
                                         <td className="py-4 text-slate-600 text-right">{formatCurrency(it.unitPrice)}</td>
@@ -218,7 +223,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 {/* Footer Notes */}
                 <div className="mt-auto pt-16 border-t border-slate-200 text-xs text-slate-500 text-center">
                     <p className="font-bold text-slate-900 mb-1">Payment Details</p>
-                    <p>Bank Transfer: BLANC EVENTS LTD | Sort: 04-00-04 | Acct: 12345678</p>
+                    <p>Bank Transfer: Blanc Collective LTD | Sort: 04-00-05 | Acct: 95990226</p>
                     <p className="mt-4">Payment is required 7 days prior to event commencement. Standard terms and conditions apply.</p>
                 </div>
 
