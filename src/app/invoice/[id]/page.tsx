@@ -35,12 +35,12 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                     Return to Site
                 </Link>
                 <div className="flex gap-4">
-                    <PrintButton />
+                    <PrintButton invoiceNumber={invoice.invoiceNumber} />
                 </div>
             </div>
 
             {/* A4 Document Area */}
-            <div className="bg-white w-full max-w-[800px] shadow-lg print:shadow-none min-h-[1131px] print:min-h-0 mx-auto p-12 md:p-16 print:p-8 relative flex flex-col rounded-sm">
+            <div id="invoice-document" className="bg-white w-full max-w-[800px] shadow-lg print:shadow-none min-h-[1131px] print:min-h-0 mx-auto p-12 md:p-16 print:p-8 relative flex flex-col rounded-sm">
 
                 {/* Header */}
                 <div className="flex justify-between items-start mb-16 print:mb-8 border-b border-slate-200 pb-12 print:pb-6">
