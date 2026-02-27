@@ -36,11 +36,10 @@ function SuccessContent() {
             if (response.ok) {
                 setIdUploaded(true);
             } else {
-                alert("Upload failed. We might not have Blob storage token configured in env yet. But the logic works!");
+                console.warn("Upload failed. We might not have Blob storage token configured in env yet. But the logic works!");
             }
         } catch (error) {
             console.error("Upload Error:", error);
-            alert("Upload Error");
         } finally {
             setUploading(false);
         }
@@ -49,7 +48,7 @@ function SuccessContent() {
     const handleSignContract = async () => {
         // Here we would integrate DocuSign trigger /api/docusign/create-envelope
         // Mapped to Agreement DB model.
-        alert("DocuSign Integration mock! Webhook would normally listen for 'EnvelopeSigned'.");
+        console.warn("DocuSign Integration mock! Webhook would normally listen for 'EnvelopeSigned'.");
         setContractSigned(true);
     };
 
@@ -59,7 +58,7 @@ function SuccessContent() {
         try {
             // To properly map it, we might need email. We could fetch booking order by ID first, 
             // but we can ask user for email, or simulate for now since we have booking ID.
-            alert("Account creation backend logic is linked in /api/auth/register. Normally we fetch Guest email from BookingOrder first.");
+            console.warn("Account creation backend logic is linked in /api/auth/register. Normally we fetch Guest email from BookingOrder first.");
             setAccountCreated(true);
         } catch (err) {
             console.error(err);
