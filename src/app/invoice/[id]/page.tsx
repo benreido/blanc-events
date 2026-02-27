@@ -40,10 +40,10 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             </div>
 
             {/* A4 Document Area */}
-            <div className="bg-white w-full max-w-[800px] shadow-lg print:shadow-none min-h-[1131px] mx-auto p-12 md:p-16 relative flex flex-col rounded-sm">
+            <div className="bg-white w-full max-w-[800px] shadow-lg print:shadow-none min-h-[1131px] print:min-h-0 mx-auto p-12 md:p-16 print:p-8 relative flex flex-col rounded-sm">
 
                 {/* Header */}
-                <div className="flex justify-between items-start mb-16 border-b border-slate-200 pb-12">
+                <div className="flex justify-between items-start mb-16 print:mb-8 border-b border-slate-200 pb-12 print:pb-6">
                     <div>
                         <h1 className="text-4xl font-black tracking-tighter text-[#123A2F] mb-1">Blanc. Events</h1>
                         <p className="text-sm text-slate-500 mb-6">Premium AV & Event Production</p>
@@ -67,7 +67,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {/* Billed To */}
-                <div className="mb-12 flex justify-between">
+                <div className="mb-12 print:mb-6 flex justify-between">
                     <div>
                         <p className="text-[10px] font-black tracking-widest uppercase text-slate-400 mb-3">Billed To</p>
                         <h3 className="font-bold text-lg text-slate-900 mb-1">{invoice.clientName}</h3>
@@ -95,7 +95,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {/* Line Items */}
-                <div className="flex-1 mb-16">
+                <div className="flex-1 mb-16 print:mb-8">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b-2 border-slate-900">
@@ -172,7 +172,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {/* Totals */}
-                <div className="flex justify-end pt-8 border-t-2 border-slate-900">
+                <div className="flex justify-end pt-8 print:pt-4 border-t-2 border-slate-900">
                     <div className="w-64 space-y-3">
                         <div className="flex justify-between text-sm text-slate-600">
                             <span>Subtotal</span>
@@ -214,14 +214,14 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {invoice.notes && (
-                    <div className="mt-8 pt-8 border-t border-slate-100">
+                    <div className="mt-8 print:mt-4 pt-8 print:pt-4 border-t border-slate-100">
                         <p className="text-[10px] font-black tracking-widest uppercase text-slate-400 mb-2">Notes & Terms</p>
                         <p className="text-sm text-slate-600 whitespace-pre-wrap">{invoice.notes}</p>
                     </div>
                 )}
 
                 {/* Footer Notes */}
-                <div className="mt-auto pt-16 border-t border-slate-200 text-xs text-slate-500 text-center">
+                <div className="mt-auto pt-16 print:pt-8 border-t border-slate-200 text-xs text-slate-500 text-center">
                     <p className="font-bold text-slate-900 mb-1">Payment Details</p>
                     <p>Bank Transfer: Blanc Collective LTD | Sort: 04-00-05 | Acct: 95990226</p>
                     <p className="mt-4">Payment is required 7 days prior to event commencement. Standard terms and conditions apply.</p>
