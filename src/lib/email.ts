@@ -11,12 +11,19 @@ async function sendEmail(to: string, subject: string, html: string) {
         console.log(html);
         return;
     }
-    await resend.emails.send({
-        from: `${siteConfig.name} <noreply@${new URL(siteConfig.url).hostname}>`,
+    const fromEmail = process.env.NODE_ENV === "development" ? "onboarding@resend.dev" : "hello@blanc-events.co.uk";
+
+    const { data, error } = await resend.emails.send({
+        from: `${siteConfig.name} <${fromEmail}>`,
         to,
         subject,
         html,
     });
+    if (error) {
+        console.error("Resend API Error:", error);
+    } else {
+        console.log("Resend API Success:", data);
+    }
 }
 
 const emailWrapper = (content: string) => `
