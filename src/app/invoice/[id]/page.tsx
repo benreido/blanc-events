@@ -35,7 +35,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                     Return to Site
                 </Link>
                 <div className="flex gap-4">
-                    <PrintButton invoiceNumber={invoice.invoiceNumber} />
+                    <PrintButton invoiceNumber={invoice.invoiceNumber} clientName={invoice.clientName} />
                 </div>
             </div>
 

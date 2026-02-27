@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function PrintButton({ invoiceNumber }: { invoiceNumber?: string }) {
+export default function PrintButton({ invoiceNumber, clientName }: { invoiceNumber?: string, clientName?: string }) {
     const [downloading, setDownloading] = useState(false);
 
     const handleDownloadPDF = async () => {
@@ -19,7 +19,7 @@ export default function PrintButton({ invoiceNumber }: { invoiceNumber?: string 
 
             const opt = {
                 margin: [-0.1, 0, 0, 0] as [number, number, number, number], // Slight negative top margin to pull content up
-                filename: `${invoiceNumber || 'Invoice'}.pdf`,
+                filename: `${clientName || 'Customer'}, ${invoiceNumber || 'Invoice'}.pdf`,
                 image: { type: 'jpeg' as const, quality: 0.98 },
                 html2canvas: { scale: 2, useCORS: true, letterRendering: true },
                 jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' as const }
