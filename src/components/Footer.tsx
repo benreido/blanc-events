@@ -13,7 +13,7 @@ export default function Footer() {
                             <span className="text-lg font-black tracking-tighter uppercase">Blanc. Events</span>
                         </div>
                         <p className="text-slate-400 text-sm leading-relaxed mb-8">
-                            Premium AV hire and event production based in the heart of Manchester. Quality without compromise.
+                            Lighting design and production studio based in Manchester. DMX-controlled environments for events that matter.
                         </p>
                         <div className="flex gap-4">
                             <a className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center hover:border-[#1F5C4B] transition-colors" href="#">
@@ -30,16 +30,16 @@ export default function Footer() {
                             <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/hire?category=Lighting">Astera Lighting</Link></li>
                             <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/hire?category=Audio">Audio Systems</Link></li>
                             <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/hire?category=Backline">DJ Backline</Link></li>
-                            <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/hire?category=Video+%26+LED">LED Video Walls</Link></li>
+                            <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/hire">View full catalogue</Link></li>
                         </ul>
                     </div>
                     <div>
                         <h5 className="font-bold text-slate-900 uppercase tracking-widest text-xs mb-8">Services</h5>
                         <ul className="space-y-4">
+                            <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/services">Lighting Design</Link></li>
                             <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/services">Event Production</Link></li>
-                            <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/services">Technical Support</Link></li>
-                            <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/services">Long-term Hire</Link></li>
-                            <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/services">Installation</Link></li>
+                            <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/packages">Production Packages</Link></li>
+                            <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/contact">Get a proposal</Link></li>
                         </ul>
                     </div>
                     <div>
@@ -53,7 +53,7 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-10 border-t border-slate-100">
-                    <p className="text-slate-500 text-xs">© 2025 Blanc. Events Manchester Ltd. All rights reserved.</p>
+                    <p className="text-slate-500 text-xs">© {new Date().getFullYear()} Blanc. Events Manchester Ltd. All rights reserved. Registered in England &amp; Wales.</p>
                     <div className="flex gap-8">
                         <a className="text-slate-500 hover:text-[#1F5C4B] transition-colors text-xs" href="#">Privacy Policy</a>
                         <a className="text-slate-500 hover:text-[#1F5C4B] transition-colors text-xs" href="#">Terms of Hire</a>

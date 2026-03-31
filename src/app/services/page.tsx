@@ -4,7 +4,18 @@ import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/config";
 import Link from "next/link";
 
-export const metadata = { title: "Services | Blanc. Events" };
+export const metadata = {
+    title: "Event Production Services",
+    description:
+        "Boutique lighting and event production services in Manchester. Lighting design, technical management, DJ talent, delivery and setup across Greater Manchester and the North West.",
+    alternates: { canonical: "https://blanc-events.co.uk/services" },
+    openGraph: {
+        title: "Event Production Services | Blanc. Events Manchester",
+        description:
+            "Boutique lighting and event production services — lighting design, technical management, DJ talent, delivery and setup across Greater Manchester.",
+        url: "https://blanc-events.co.uk/services",
+    },
+};
 
 export const dynamic = "force-dynamic";
 
@@ -15,12 +26,12 @@ export default async function ServicesPage() {
     } catch { /* DB */ }
 
     const coreServices = [
-        { icon: "celebration", title: "Boutique Party Planning", desc: "Personalised coordination for private celebrations and weddings. We handle the technical timeline, atmospheric design, and supplier logistics to ensure your party runs flawlessly." },
-        { icon: "music_note", title: "Talent & Entertainment", desc: "Access to our curated roster of premium talent, including boutique DJs, live saxophonists, magicians, and specialty performers tailored to your event's energy." },
-        { icon: "star", title: "Boutique Production", desc: "Focused technical management for your event. We work closely with you to plan, install, and operate a curated setup that brings your vision to life with impeccable detail." },
-        { icon: "person", title: "Personal Technical Support", desc: "Direct, founder-led oversight of your event's technical backbone. A lead technician remains on-site to ensure every detail is managed with care." },
-        { icon: "local_shipping", title: "Local Delivery & Setup", desc: "Reliable, white-glove delivery and precision setup across Greater Manchester. We handle the technical integration so you can focus on your guests." },
-        { icon: "edit", title: "Practical Technical Design", desc: "Scalable lighting and audio solutions designed for mid-scale environments. We create realistic layouts that maximize impact." },
+        { icon: "lightbulb", title: "Lighting Design & Installation", desc: "Full DMX-controlled lighting environments, custom-plotted and operated. From concept through to strike — we design the atmosphere, then build it." },
+        { icon: "star", title: "Event Production", desc: "Complete technical delivery including lighting, audio, and on-site production management. We embed in your team and own the technical outcome." },
+        { icon: "edit", title: "Technical Production Design", desc: "Pre-event production design for venues and agencies. We create detailed lighting plots, rig plans, and technical riders tailored to your space." },
+        { icon: "person", title: "On-site Production Management", desc: "A dedicated lead technician on-site for the duration of your event. Founder-led oversight, personal accountability, zero surprises." },
+        { icon: "local_shipping", title: "Delivery & Setup", desc: "White-glove delivery and precision setup across Greater Manchester. Full integration, tested and signed off before doors open." },
+        { icon: "nightlife", title: "Nightlife & Club Production", desc: "Specialist production for club nights, residencies, and venue installations. DMX rigs, truss configurations, and fixture programming for the dance floor." },
     ];
 
     return (
@@ -32,9 +43,9 @@ export default async function ServicesPage() {
                         <span className="inline-block py-1 px-3 border border-white/20 text-white/80 text-[10px] font-bold uppercase tracking-[0.3em] rounded mb-6">
                             Beyond Equipment
                         </span>
-                        <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6">Boutique Production</h1>
+                        <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6">Lighting Design &amp; Production</h1>
                         <p className="text-white/60 text-lg max-w-2xl mx-auto">
-                            Focused, hands-on technical delivery for corporate events, weddings, and private celebrations. We specialise in impeccable execution and personal accountability.
+                            We design, build, and operate lighting environments for nightclubs, corporate events, and private productions. Not equipment rental — production with a point of view.
                         </p>
                     </div>
                 </section>

@@ -4,7 +4,18 @@ import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/config";
 import Link from "next/link";
 
-export const metadata = { title: "Packages | Blanc. Events" };
+export const metadata = {
+    title: "Production Packages",
+    description:
+        "Pre-configured lighting and AV production packages for events in Manchester. Comprehensive setups including lighting design, audio, and technical support. Contact us for a tailored quote.",
+    alternates: { canonical: "https://blanc-events.co.uk/packages" },
+    openGraph: {
+        title: "Production Packages | Blanc. Events Manchester",
+        description:
+            "Pre-configured lighting and AV production packages for events in Manchester. Lighting design, audio, and technical support included.",
+        url: "https://blanc-events.co.uk/packages",
+    },
+};
 
 export const dynamic = "force-dynamic";
 

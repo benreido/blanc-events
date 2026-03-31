@@ -135,6 +135,40 @@ export async function sendBookingConfirmation(booking: {
     await sendEmail(siteConfig.contactEmail, `Booking Confirmed: ${booking.customerName}`, html);
 }
 
+export async function sendInvoiceToClient(invoice: {
+    clientEmail: string;
+    clientName: string;
+    invoiceNumber: string;
+    total: number;
+    balanceDue: number;
+    depositAmount: number;
+    dueDate: string | null;
+    id: string;
+    message?: string;
+}) {
+    const invoiceUrl = `${siteConfig.url}/invoice/${invoice.id}`;
+    const amountLine = invoice.balanceDue > 0
+        ? `<strong>Balance Due:</strong> ${formatCurrency(invoice.balanceDue)}`
+        : `<strong>Total:</strong> ${formatCurrency(invoice.total)}`;
+
+    const html = emailWrapper(`
+    <h2 style="color:#123A2F;margin-top:0;">Invoice ${invoice.invoiceNumber}</h2>
+    <p>Hi ${invoice.clientName},</p>
+    ${invoice.message ? `<p>${invoice.message}</p>` : `<p>Please find your invoice from Blanc. Events attached below. You can view and download it using the button below.</p>`}
+    <div style="background:#f8fafc;border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="margin:4px 0;color:#475569;">${amountLine}</p>
+      ${invoice.dueDate ? `<p style="margin:4px 0;color:#475569;"><strong>Due:</strong> ${invoice.dueDate}</p>` : ""}
+      ${invoice.depositAmount > 0 && invoice.balanceDue === invoice.total ? `<p style="margin:4px 0;color:#1F5C4B;font-weight:700;">Deposit required: ${formatCurrency(invoice.depositAmount)}</p>` : ""}
+    </div>
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${invoiceUrl}" style="display:inline-block;background:#1F5C4B;color:white;padding:16px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:0.5px;">View Invoice</a>
+    </div>
+    <p style="color:#64748b;font-size:13px;">If you have any questions, reply to this email or call us on ${siteConfig.contactPhone}.</p>
+    <p style="color:#64748b;font-size:13px;"><strong>Payment by bank transfer:</strong> Blanc Collective LTD | Sort: 04-00-05 | Acct: 95990226</p>
+  `);
+    await sendEmail(invoice.clientEmail, `Invoice ${invoice.invoiceNumber} – Blanc. Events`, html);
+}
+
 export async function sendPaymentLink(to: string, customerName: string, amount: number, paymentUrl: string) {
     const html = emailWrapper(`
     <h2 style="color:#123A2F;margin-top:0;">Payment Required</h2>

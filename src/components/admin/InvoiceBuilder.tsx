@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 interface InvoiceItem {
-    id: string; // temp id for UI
+    id: string;
     name: string;
     description: string;
     quantity: number;
@@ -20,6 +20,16 @@ interface InvoiceAdjustment {
     description: string;
     amount: number;
     type: "EXTRA" | "LATE_FEE" | "DISCOUNT" | "CREDIT";
+}
+
+interface SavedClient {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+    company: string;
+    address: string;
+    notes: string;
 }
 
 export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
@@ -38,6 +48,14 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
     const [clientEmail, setClientEmail] = useState(initialData?.clientEmail || "");
     const [clientAddress, setClientAddress] = useState(initialData?.clientAddress || "");
 
+    // Saved clients
+    const [savedClients, setSavedClients] = useState<SavedClient[]>([]);
+    const [clientSearch, setClientSearch] = useState("");
+    const [showClientList, setShowClientList] = useState(false);
+    const [savingClient, setSavingClient] = useState(false);
+    const [clientSaved, setClientSaved] = useState(false);
+    const clientSearchRef = useRef<HTMLDivElement>(null);
+
     // Line Items
     const [items, setItems] = useState<InvoiceItem[]>(initialData?.items?.map((it: any) => ({ ...it, id: it.id || crypto.randomUUID() })) || []);
 
@@ -53,7 +71,87 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
         }
     }, [initialData]);
 
-    const vatRate = 0.20; // 20% standard UK
+    // Load saved clients
+    useEffect(() => {
+        fetch("/api/admin/clients")
+            .then(r => r.json())
+            .then(data => setSavedClients(data.clients || []))
+            .catch(() => {});
+    }, []);
+
+    // Close dropdown on outside click
+    useEffect(() => {
+        function handleClick(e: MouseEvent) {
+            if (clientSearchRef.current && !clientSearchRef.current.contains(e.target as Node)) {
+                setShowClientList(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClick);
+        return () => document.removeEventListener("mousedown", handleClick);
+    }, []);
+
+    const filteredClients = useMemo(() => {
+        if (!clientSearch.trim()) return savedClients;
+        const q = clientSearch.toLowerCase();
+        return savedClients.filter(c =>
+            c.name.toLowerCase().includes(q) ||
+            c.email.toLowerCase().includes(q) ||
+            c.company.toLowerCase().includes(q)
+        );
+    }, [savedClients, clientSearch]);
+
+    function selectClient(client: SavedClient) {
+        setClientId(client.id);
+        setClientName(client.name);
+        setClientEmail(client.email);
+        setClientAddress(client.address);
+        setClientSearch(client.name);
+        setShowClientList(false);
+        setClientSaved(true);
+    }
+
+    function clearSelectedClient() {
+        setClientId("");
+        setClientSearch("");
+        setClientSaved(false);
+    }
+
+    async function handleSaveClient() {
+        if (!clientName || !clientEmail) return;
+        setSavingClient(true);
+        try {
+            if (clientId) {
+                // Update existing client
+                const res = await fetch(`/api/admin/clients/${clientId}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: clientName, email: clientEmail, address: clientAddress }),
+                });
+                const data = await res.json();
+                if (data.success) {
+                    setSavedClients(prev => prev.map(c => c.id === clientId ? data.client : c));
+                    setClientSaved(true);
+                }
+            } else {
+                // Create new client
+                const res = await fetch("/api/admin/clients", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: clientName, email: clientEmail, address: clientAddress }),
+                });
+                const data = await res.json();
+                if (data.success) {
+                    setClientId(data.client.id);
+                    setSavedClients(prev => [...prev, data.client]);
+                    setClientSaved(true);
+                }
+            }
+        } finally {
+            setSavingClient(false);
+        }
+    }
+
+    const vatRate = 0.20;
 
     const totals = useMemo(() => {
         let subtotal = 0;
@@ -63,21 +161,15 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
             let lineTotal = item.quantity * item.unitPrice;
             if (item.discountType === "FIXED") lineTotal -= item.discount;
             else if (item.discountType === "PERCENTAGE") lineTotal -= lineTotal * (item.discount / 100);
-
             subtotal += lineTotal;
-            if (item.taxable) {
-                vatAmount += lineTotal * vatRate;
-            }
+            if (item.taxable) vatAmount += lineTotal * vatRate;
         });
 
         let adjTotal = 0;
-        adjustments.forEach(adj => {
-            adjTotal += adj.amount; // negative logic for credits can be mapped or handled, we assume amount keeps its sign (neg or pos)
-        });
+        adjustments.forEach(adj => { adjTotal += adj.amount; });
 
         const total = subtotal + vatAmount + adjTotal;
         const depositAmount = total * (depositPercent / 100);
-        // compute balance
         const amountPaid = initialData?.amountPaid || 0;
         const balanceDue = total - amountPaid;
 
@@ -99,7 +191,6 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
     const reorderItem = (index: number, direction: 'up' | 'down') => {
         if (direction === 'up' && index === 0) return;
         if (direction === 'down' && index === items.length - 1) return;
-
         const newItems = [...items];
         const swapIndex = direction === 'up' ? index - 1 : index + 1;
         [newItems[index], newItems[swapIndex]] = [newItems[swapIndex], newItems[index]];
@@ -164,20 +255,123 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
                             <span className="material-symbols-outlined text-[18px]">person</span> Client Details
                         </h2>
 
+                        {/* Client search / picker */}
+                        <div ref={clientSearchRef} className="relative">
+                            <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">
+                                Saved clients
+                            </label>
+                            <div className="flex gap-2">
+                                <div className="relative flex-1">
+                                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                                    <input
+                                        type="text"
+                                        value={clientSearch}
+                                        onChange={e => { setClientSearch(e.target.value); setShowClientList(true); if (!e.target.value) clearSelectedClient(); }}
+                                        onFocus={() => setShowClientList(true)}
+                                        className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1F5C4B]"
+                                        placeholder={savedClients.length > 0 ? `Search ${savedClients.length} saved client${savedClients.length !== 1 ? 's' : ''}…` : "No saved clients yet"}
+                                    />
+                                    {clientId && (
+                                        <button
+                                            onClick={clearSelectedClient}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                                        >
+                                            <span className="material-symbols-outlined text-[16px]">close</span>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Selected client badge */}
+                            {clientId && (
+                                <div className="mt-2 flex items-center gap-2 text-xs text-[#1F5C4B] font-medium">
+                                    <span className="material-symbols-outlined text-[14px]">check_circle</span>
+                                    Linked to saved client
+                                </div>
+                            )}
+
+                            {/* Dropdown */}
+                            {showClientList && filteredClients.length > 0 && (
+                                <div className="absolute z-20 top-full mt-1 left-0 right-0 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden max-h-56 overflow-y-auto">
+                                    {filteredClients.map(client => (
+                                        <button
+                                            key={client.id}
+                                            onClick={() => selectClient(client)}
+                                            className="w-full text-left px-4 py-3 hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0"
+                                        >
+                                            <div className="font-semibold text-sm text-slate-800">{client.name}</div>
+                                            <div className="text-xs text-slate-400 mt-0.5">
+                                                {client.email}{client.company ? ` · ${client.company}` : ""}
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
+                            {showClientList && clientSearch && filteredClients.length === 0 && (
+                                <div className="absolute z-20 top-full mt-1 left-0 right-0 bg-white border border-slate-200 rounded-xl shadow-lg px-4 py-3 text-sm text-slate-400">
+                                    No clients match &quot;{clientSearch}&quot;
+                                </div>
+                            )}
+                        </div>
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Client Name</label>
-                                <input type="text" value={clientName} onChange={e => setClientName(e.target.value)} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1F5C4B]" placeholder="John Doe" />
+                                <input
+                                    type="text"
+                                    value={clientName}
+                                    onChange={e => { setClientName(e.target.value); setClientSaved(false); }}
+                                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1F5C4B]"
+                                    placeholder="John Doe"
+                                />
                             </div>
                             <div>
                                 <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Email Address</label>
-                                <input type="email" value={clientEmail} onChange={e => setClientEmail(e.target.value)} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1F5C4B]" placeholder="hello@example.com" />
+                                <input
+                                    type="email"
+                                    value={clientEmail}
+                                    onChange={e => { setClientEmail(e.target.value); setClientSaved(false); }}
+                                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1F5C4B]"
+                                    placeholder="hello@example.com"
+                                />
                             </div>
                             <div className="md:col-span-2">
                                 <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Billing Address</label>
-                                <textarea value={clientAddress} onChange={e => setClientAddress(e.target.value)} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1F5C4B]" rows={2} placeholder="123 Street, City..." />
+                                <textarea
+                                    value={clientAddress}
+                                    onChange={e => { setClientAddress(e.target.value); setClientSaved(false); }}
+                                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1F5C4B]"
+                                    rows={2}
+                                    placeholder="123 Street, City..."
+                                />
                             </div>
                         </div>
+
+                        {/* Save client button */}
+                        {clientName && clientEmail && (
+                            <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                                <p className="text-xs text-slate-400">
+                                    {clientId
+                                        ? clientSaved ? "Client details saved." : "Details changed — save to update."
+                                        : "Save this client for future invoices."}
+                                </p>
+                                <button
+                                    onClick={handleSaveClient}
+                                    disabled={savingClient || clientSaved}
+                                    className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors ${
+                                        clientSaved
+                                            ? "bg-emerald-50 text-emerald-600 border border-emerald-200 cursor-default"
+                                            : "bg-[#1F5C4B]/10 text-[#1F5C4B] border border-[#1F5C4B]/20 hover:bg-[#1F5C4B]/20"
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-[14px]">
+                                        {clientSaved ? "check" : clientId ? "sync" : "person_add"}
+                                    </span>
+                                    {savingClient ? "Saving…" : clientSaved ? "Saved" : clientId ? "Update client" : "Save client"}
+                                </button>
+                            </div>
+                        )}
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 pt-6">
                             <div>
@@ -306,7 +500,7 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
                     </div>
                 </div>
 
-                {/* Right Col - Checkout View / Totals Panel */}
+                {/* Right Col - Totals Panel */}
                 <div className="space-y-6">
                     <div className="bg-[#123A2F] text-white p-6 md:p-8 rounded-3xl shadow-brand-lg sticky top-8">
                         <h3 className="font-bold uppercase tracking-widest text-[#1F5C4B] text-xs bg-white/10 inline-block px-3 py-1 rounded-full mb-6">Financial Summary</h3>
@@ -350,7 +544,6 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
                                 <span>£{totals.balanceDue.toFixed(2)}</span>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

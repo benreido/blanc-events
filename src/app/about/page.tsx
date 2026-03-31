@@ -2,7 +2,18 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 
-export const metadata = { title: "About Us | Blanc. Events" };
+export const metadata = {
+    title: "About Us",
+    description:
+        "Learn about Blanc. Events — Manchester's specialist lighting production studio. Founded on a passion for flawless event production, we serve the North West's most ambitious venues and agencies.",
+    alternates: { canonical: "https://blanc-events.co.uk/about" },
+    openGraph: {
+        title: "About Blanc. Events | Lighting Production Manchester",
+        description:
+            "Manchester-born lighting production specialists with expertise in Astera fixtures, DMX-controlled environments, and full event production across the North West.",
+        url: "https://blanc-events.co.uk/about",
+    },
+};
 
 export default function AboutPage() {
     return (
@@ -17,7 +28,7 @@ export default function AboutPage() {
                         </span>
                         <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6">About Blanc. Events</h1>
                         <p className="text-white/60 text-lg max-w-2xl mx-auto">
-                            Manchester-born AV specialists driven by a passion for flawless event production and cutting-edge technology.
+                            Manchester's specialist lighting production studio. We design and build environments with light.
                         </p>
                     </div>
                 </section>
@@ -28,13 +39,16 @@ export default function AboutPage() {
                         <div className="prose prose-lg max-w-none">
                             <h2 className="text-3xl font-black tracking-tighter uppercase text-[#123A2F] mb-8">Who We Are</h2>
                             <p className="text-slate-600 leading-relaxed mb-6">
-                                Founded in the heart of Manchester, Blanc. Events is a premium AV and event production hire company serving the North West&apos;s most ambitious venues, agencies, and event planners.
+                                Founded in Manchester, Blanc. Events is a lighting production studio and specialist hire company serving the North West&apos;s most ambitious venues, agencies, and event planners.
                             </p>
                             <p className="text-slate-600 leading-relaxed mb-6">
-                                We believe that exceptional events start with exceptional technology. That&apos;s why we continuously invest in industry-leading equipment from brands like <strong>Astera</strong>, <strong>L-Acoustics</strong>, <strong>MA Lighting</strong>, and <strong>Pioneer DJ</strong> — ensuring our clients always have access to the best gear available.
+                                We&apos;re not a general AV company. We specialise in lighting — DMX-controlled environments, wireless Astera fixtures, and creative production design that defines the atmosphere of an event. Every project starts with a brief, not an equipment list.
+                            </p>
+                            <p className="text-slate-600 leading-relaxed mb-6">
+                                Our inventory includes industry-leading fixtures from <strong>Astera</strong> and <strong>MA Lighting</strong>, alongside professional audio from <strong>L-Acoustics</strong> and <strong>Pioneer DJ</strong> backline — ensuring our clients have access to the equipment that actually matters.
                             </p>
                             <p className="text-slate-600 leading-relaxed mb-12">
-                                Our team of experienced production professionals brings decades of combined expertise across live music, corporate events, festivals, and private functions. We don&apos;t just hire equipment — we deliver complete production solutions tailored to your vision.
+                                Our production team brings deep expertise across nightlife, corporate events, live music, and private functions. We plan, build, and operate lighting setups that define how a space feels.
                             </p>
                         </div>
                     </div>
