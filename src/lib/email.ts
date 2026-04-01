@@ -181,3 +181,37 @@ export async function sendPaymentLink(to: string, customerName: string, amount: 
   `);
     await sendEmail(to, "Payment Link – Blanc. Events", html);
 }
+
+export async function sendVenueBookingNotification(booking: {
+    venue: string;
+    eventDate: string;
+    eventType: string;
+    startTime: string;
+    endTime: string;
+    clientName: string;
+    clientEmail: string;
+    clientPhone: string;
+    notes: string;
+}) {
+    const venueLabel = booking.venue === "MARQUEE" ? "Marquee" : "Clubhouse";
+
+    const adminHtml = emailWrapper(`
+    <h2 style="color:#123A2F;margin-top:0;">New Alder Root Booking Request</h2>
+    <p style="color:#64748b;font-size:13px;margin-bottom:24px;">A new venue booking request has been submitted via the Alder Root Golf Club form.</p>
+    <table style="width:100%;border-collapse:collapse;">
+    <tr><td style="padding:10px 0;color:#64748b;width:140px;border-bottom:1px solid #f1f5f9;">Venue:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${venueLabel}</td></tr>
+    <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Event Type:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${booking.eventType}</td></tr>
+    <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Date:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${booking.eventDate}</td></tr>
+    <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Time:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${booking.startTime} – ${booking.endTime}</td></tr>
+    <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Client:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${booking.clientName}</td></tr>
+    <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Email:</td><td style="padding:10px 0;border-bottom:1px solid #f1f5f9;">${booking.clientEmail}</td></tr>
+    <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Phone:</td><td style="padding:10px 0;border-bottom:1px solid #f1f5f9;">${booking.clientPhone || "—"}</td></tr>
+    </table>
+    ${booking.notes ? `<div style="background:#f8fafc;border-radius:8px;padding:16px;margin-top:20px;">
+    <p style="margin:0 0 4px 0;color:#64748b;font-size:12px;text-transform:uppercase;font-weight:700;letter-spacing:0.5px;">Additional Notes</p>
+    <p style="margin:0;color:#334155;">${booking.notes}</p>
+    </div>` : ""}
+  `);
+
+    await sendEmail(siteConfig.contactEmail, `Alder Root Booking: ${booking.eventType} – ${venueLabel} – ${booking.eventDate}`, adminHtml);
+}

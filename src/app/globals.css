@@ -218,3 +218,136 @@
 .scroll-badge-3 {
   animation-range: entry 30% exit 70%;
 }
+
+/* ── Invoice Print / PDF ── */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  html, body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  /* Hide everything except the invoice */
+  body > *:not(#__next),
+  nav, footer, header,
+  .print\\:hidden,
+  [class*="print:hidden"] {
+    display: none !important;
+  }
+
+  /* Invoice document – force single page */
+  #invoice-document {
+    width: 210mm !important;
+    min-height: 0 !important;
+    max-height: 296mm !important;
+    padding: 12mm 14mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    overflow: hidden !important;
+    font-size: 11px !important;
+  }
+
+  /* Compact header */
+  #invoice-document h1 {
+    font-size: 22px !important;
+    margin-bottom: 2px !important;
+  }
+
+  #invoice-document h2 {
+    font-size: 22px !important;
+  }
+
+  /* Tighten all spacing */
+  #invoice-document .mb-16 { margin-bottom: 10px !important; }
+  #invoice-document .mb-12 { margin-bottom: 8px !important; }
+  #invoice-document .mb-8  { margin-bottom: 6px !important; }
+  #invoice-document .pb-12 { padding-bottom: 6px !important; }
+  #invoice-document .pt-16 { padding-top: 8px !important; }
+  #invoice-document .pt-8  { padding-top: 6px !important; }
+  #invoice-document .mt-8  { margin-top: 6px !important; }
+  #invoice-document .mt-auto { margin-top: 4px !important; }
+
+  /* Compact table rows */
+  #invoice-document table th {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    font-size: 8px !important;
+  }
+  #invoice-document table td {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    font-size: 11px !important;
+  }
+  #invoice-document table td p {
+    font-size: 9px !important;
+    margin-top: 1px !important;
+  }
+
+  /* Smaller totals section */
+  #invoice-document .text-xl {
+    font-size: 15px !important;
+  }
+
+  /* Compact footer */
+  #invoice-document .text-xs {
+    font-size: 9px !important;
+  }
+
+  /* Fix flexbox stretching */
+  #invoice-document .flex-1 {
+    flex: 0 1 auto !important;
+  }
+
+  /* No page breaks anywhere inside */
+  #invoice-document * {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+
+/* html2pdf.js rendering class – mirrors print compaction */
+.pdf-rendering {
+  padding: 10mm 12mm !important;
+  min-height: 0 !important;
+  font-size: 11px !important;
+}
+
+.pdf-rendering .mb-16 { margin-bottom: 10px !important; }
+.pdf-rendering .mb-12 { margin-bottom: 8px !important; }
+.pdf-rendering .mb-8  { margin-bottom: 6px !important; }
+.pdf-rendering .pb-12 { padding-bottom: 6px !important; }
+.pdf-rendering .pt-16 { padding-top: 8px !important; }
+.pdf-rendering .pt-8  { padding-top: 6px !important; }
+.pdf-rendering .mt-8  { margin-top: 6px !important; }
+.pdf-rendering .mt-auto { margin-top: 4px !important; }
+
+.pdf-rendering h1 { font-size: 22px !important; margin-bottom: 2px !important; }
+.pdf-rendering h2 { font-size: 22px !important; }
+
+.pdf-rendering table th {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  font-size: 8px !important;
+}
+.pdf-rendering table td {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  font-size: 11px !important;
+}
+.pdf-rendering table td p {
+  font-size: 9px !important;
+  margin-top: 1px !important;
+}
+
+.pdf-rendering .text-xl { font-size: 15px !important; }
+.pdf-rendering .flex-1 { flex: 0 1 auto !important; }

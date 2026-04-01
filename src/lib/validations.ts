@@ -91,3 +91,16 @@ export const adminServiceSchema = z.object({
     isActive: z.boolean().optional().default(true),
 });
 export type AdminServiceValues = z.infer<typeof adminServiceSchema>;
+
+export const venueBookingSchema = z.object({
+    venue: z.enum(["MARQUEE", "CLUBHOUSE"], { required_error: "Please select a venue" }),
+    eventDate: z.string().min(1, "Event date is required"),
+    eventType: z.string().min(2, "Event type is required"),
+    startTime: z.string().min(1, "Start time is required"),
+    endTime: z.string().min(1, "End time is required"),
+    clientName: z.string().min(2, "Name must be at least 2 characters"),
+    clientEmail: z.string().email("Please enter a valid email").optional().or(z.literal("")),
+    clientPhone: z.string().optional().default(""),
+    notes: z.string().optional().default(""),
+});
+export type VenueBookingValues = z.infer<typeof venueBookingSchema>;

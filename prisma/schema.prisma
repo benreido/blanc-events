@@ -496,3 +496,22 @@ model IdentityDocument {
   @@index([status])
   @@index([guestEmail])
 }
+
+model VenueBooking {
+  id            String   @id @default(cuid())
+  venue         String   // "MARQUEE" or "CLUBHOUSE"
+  eventDate     DateTime
+  eventType     String   // e.g. "Wedding", "Birthday", "Corporate"
+  startTime     String   // e.g. "18:00"
+  endTime       String   // e.g. "23:00"
+  clientName    String
+  clientEmail   String
+  clientPhone   String   @default("")
+  notes         String   @default("")
+  status        String   @default("NEW") // NEW, CONFIRMED, CANCELLED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status])
+  @@index([eventDate])
+}

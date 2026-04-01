@@ -40,10 +40,10 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             </div>
 
             {/* A4 Document Area */}
-            <div id="invoice-document" className="bg-white w-full max-w-[800px] shadow-lg print:shadow-none min-h-[1131px] print:min-h-0 mx-auto p-12 md:p-16 print:p-8 relative flex flex-col rounded-sm">
+            <div id="invoice-document" className="bg-white w-full max-w-[800px] shadow-lg print:shadow-none min-h-[1131px] print:min-h-0 print:max-h-[296mm] mx-auto p-12 md:p-16 print:p-[12mm] relative flex flex-col rounded-sm print:rounded-none print:overflow-hidden">
 
                 {/* Header */}
-                <div className="flex justify-between items-start mb-16 print:mb-8 border-b border-[#e2e8f0] pb-12 print:pb-6">
+                <div className="flex justify-between items-start mb-16 print:mb-3 border-b border-[#e2e8f0] pb-12 print:pb-3">
                     <div>
                         <h1 className="text-4xl font-black tracking-tighter text-[#123A2F] mb-1">Blanc. Events</h1>
                         <p className="text-sm text-[#64748b] mb-6">Premium AV & Event Production</p>
@@ -67,7 +67,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {/* Billed To */}
-                <div className="mb-12 print:mb-6 flex justify-between">
+                <div className="mb-12 print:mb-3 flex justify-between">
                     <div>
                         <p className="text-[10px] font-black tracking-widest uppercase text-[#94a3b8] mb-3">Billed To</p>
                         <h3 className="font-bold text-lg text-[#0f172a] mb-1">{invoice.clientName}</h3>
@@ -95,7 +95,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {/* Line Items */}
-                <div className="flex-1 mb-16 print:mb-8">
+                <div className="print:flex-none mb-16 print:mb-3">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b-2 border-[#0f172a]">
@@ -172,7 +172,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {/* Totals */}
-                <div className="flex justify-end pt-8 print:pt-4 border-t-2 border-[#0f172a]">
+                <div className="flex justify-end pt-8 print:pt-2 border-t-2 border-[#0f172a]">
                     <div className="w-64 space-y-3">
                         <div className="flex justify-between text-sm text-[#475569]">
                             <span>Subtotal</span>
@@ -214,14 +214,14 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {invoice.notes && (
-                    <div className="mt-8 print:mt-4 pt-8 print:pt-4 border-t border-[#f1f5f9]">
+                    <div className="mt-8 print:mt-2 pt-8 print:pt-2 border-t border-[#f1f5f9]">
                         <p className="text-[10px] font-black tracking-widest uppercase text-[#94a3b8] mb-2">Notes & Terms</p>
                         <p className="text-sm text-[#475569] whitespace-pre-wrap">{invoice.notes}</p>
                     </div>
                 )}
 
                 {/* Footer Notes */}
-                <div className="mt-auto pt-16 print:pt-8 border-t border-[#e2e8f0] text-xs text-[#64748b] text-center">
+                <div className="mt-auto print:mt-2 pt-16 print:pt-2 border-t border-[#e2e8f0] text-xs text-[#64748b] text-center">
                     <p className="font-bold text-[#0f172a] mb-1">Payment Details</p>
                     <p>Bank Transfer: Blanc Collective LTD | Sort: 04-00-05 | Acct: 95990226</p>
                     <p className="mt-4">Payment is required 7 days prior to event commencement. Standard terms and conditions apply.</p>
