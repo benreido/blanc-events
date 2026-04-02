@@ -239,13 +239,25 @@
     display: none !important;
   }
 
+  /* Flatten the outer wrapper so it doesn't clip the invoice */
+  body > div,
+  body > div > div {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+  }
+
   /* Invoice document – force single page */
   #invoice-document {
     width: 210mm !important;
+    max-width: 210mm !important;
     min-height: 0 !important;
     max-height: 287mm !important;
     padding: 10mm 12mm !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
     box-shadow: none !important;
     border-radius: 0 !important;
     page-break-inside: avoid !important;
