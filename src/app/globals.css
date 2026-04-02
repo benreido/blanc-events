@@ -219,230 +219,33 @@
   animation-range: entry 30% exit 70%;
 }
 
-/* ═══════════════════════════════════════════════════
-   Invoice – Dedicated Class System
-   Uses .inv-* classes so print/PDF compaction works
-   reliably regardless of Tailwind version.
-   ═══════════════════════════════════════════════════ */
-
-/* ── Page wrapper ── */
-.inv-page {
-  min-height: 100vh;
-  background: #f1f5f9;
-  padding: 3rem 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* ── Quick-action bar (print/download buttons) ── */
-.inv-actions {
-  max-width: 800px;
-  width: 100%;
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* ── A4 document ── */
-.inv-doc {
-  background: white;
-  width: 100%;
-  max-width: 800px;
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,.1);
-  min-height: 1131px;            /* ≈ A4 at 96dpi */
-  margin: 0 auto;
-  padding: 3rem 4rem;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  border-radius: 2px;
-}
-
-/* ── Header (logo + invoice meta) ── */
-.inv-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 4rem;
-  border-bottom: 1px solid #e2e8f0;
-  padding-bottom: 3rem;
-}
-
-.inv-logo {
-  font-size: 2.25rem;
-  font-weight: 900;
-  letter-spacing: -0.05em;
-  color: #123A2F;
-  margin-bottom: 0.25rem;
-}
-
-.inv-tagline {
-  font-size: 0.875rem;
-  color: #64748b;
-  margin-bottom: 1.5rem;
-}
-
-.inv-contact {
-  font-size: 0.75rem;
-  color: #475569;
-  line-height: 1.6;
-}
-
-.inv-title {
-  font-size: 2.25rem;
-  font-weight: 900;
-  letter-spacing: -0.05em;
-  color: #e2e8f0;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-}
-
-.inv-meta {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #64748b;
-  margin-top: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.inv-meta-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 2rem;
-}
-
-.inv-meta-val {
-  color: #0f172a;
-}
-
-/* ── Billed-to block ── */
-.inv-billed {
-  margin-bottom: 3rem;
-  display: flex;
-  justify-content: space-between;
-}
-
-/* ── Section label (BILLED TO, EVENT DETAILS, NOTES) ── */
-.inv-section-label {
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #94a3b8;
-  margin-bottom: 0.75rem;
-}
-
-/* ── Items table ── */
-.inv-items {
-  margin-bottom: 4rem;
-}
-
-.inv-th {
-  padding: 0.75rem 0;
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #64748b;
-}
-
-.inv-td {
-  padding: 1rem 0;
-}
-
-.inv-td-sub {
-  font-size: 0.75rem;
-  color: #64748b;
-  margin-top: 0.25rem;
-}
-
-.inv-td-discount {
-  font-size: 11px;
-  color: #059669;
-  font-weight: 700;
-  margin-top: 0.25rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* ── Totals ── */
-.inv-totals {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 2rem;
-  border-top: 2px solid #0f172a;
-}
-
-.inv-totals-inner {
-  width: 16rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.inv-total-due {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.25rem;
-  font-weight: 900;
-  color: #123A2F;
-  border-top: 1px solid #e2e8f0;
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  margin-bottom: 0.25rem;
-}
-
-/* ── Notes ── */
-.inv-notes {
-  margin-top: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid #f1f5f9;
-}
-
-/* ── Footer ── */
-.inv-footer {
-  margin-top: auto;
-  padding-top: 4rem;
-  border-top: 1px solid #e2e8f0;
-  font-size: 0.75rem;
-  color: #64748b;
-  text-align: center;
-}
-
-
-/* ═══════════════════════════════════════════════════
-   Print overrides  –  force everything onto 1 A4
-   ═══════════════════════════════════════════════════ */
+/* ── Invoice Print / PDF ── */
 @media print {
-  @page { size: A4 portrait; margin: 0; }
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
 
   html, body {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    margin: 0 !important; padding: 0 !important;
-    background: white !important;
-  }
-
-  /* Hide non-invoice chrome */
-  .inv-actions,
-  nav, footer, header { display: none !important; }
-
-  .inv-page {
+    margin: 0 !important;
     padding: 0 !important;
     background: white !important;
-    min-height: 0 !important;
   }
 
-  .inv-doc {
+  /* Hide everything except the invoice */
+  body > *:not(#__next),
+  nav, footer, header {
+    display: none !important;
+  }
+
+  /* Invoice document – force single page */
+  #invoice-document {
     width: 210mm !important;
-    max-width: none !important;
     min-height: 0 !important;
     max-height: 296mm !important;
-    padding: 10mm 12mm !important;
+    padding: 12mm 14mm !important;
     margin: 0 !important;
     box-shadow: none !important;
     border-radius: 0 !important;
@@ -452,66 +255,97 @@
     font-size: 11px !important;
   }
 
-  .inv-logo  { font-size: 20px !important; margin-bottom: 1px !important; }
-  .inv-title { font-size: 20px !important; margin-bottom: 1px !important; }
-  .inv-tagline { font-size: 10px !important; margin-bottom: 4px !important; }
-  .inv-contact { font-size: 9px !important; }
+  /* Compact header */
+  #invoice-document h1 {
+    font-size: 22px !important;
+    margin-bottom: 2px !important;
+  }
 
-  .inv-header { margin-bottom: 8px !important; padding-bottom: 6px !important; }
-  .inv-billed { margin-bottom: 8px !important; }
-  .inv-items  { margin-bottom: 6px !important; }
-  .inv-totals { padding-top: 6px !important; }
-  .inv-notes  { margin-top: 4px !important; padding-top: 4px !important; }
-  .inv-footer { margin-top: 4px !important; padding-top: 4px !important; font-size: 9px !important; }
+  #invoice-document h2 {
+    font-size: 22px !important;
+  }
 
-  .inv-section-label { font-size: 8px !important; margin-bottom: 3px !important; }
-  .inv-meta { margin-top: 6px !important; gap: 2px !important; font-size: 9px !important; }
+  /* Tighten all spacing */
+  #invoice-document .mb-16 { margin-bottom: 10px !important; }
+  #invoice-document .mb-12 { margin-bottom: 8px !important; }
+  #invoice-document .mb-8  { margin-bottom: 6px !important; }
+  #invoice-document .pb-12 { padding-bottom: 6px !important; }
+  #invoice-document .pt-16 { padding-top: 8px !important; }
+  #invoice-document .pt-8  { padding-top: 6px !important; }
+  #invoice-document .mt-8  { margin-top: 6px !important; }
+  #invoice-document .mt-auto { margin-top: 4px !important; }
 
-  .inv-th { padding: 3px 0 !important; font-size: 8px !important; }
-  .inv-td { padding: 4px 0 !important; font-size: 11px !important; }
-  .inv-td-sub { font-size: 9px !important; margin-top: 1px !important; }
-  .inv-td-discount { font-size: 9px !important; margin-top: 1px !important; }
+  /* Compact table rows */
+  #invoice-document table th {
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    font-size: 8px !important;
+  }
+  #invoice-document table td {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    font-size: 11px !important;
+  }
+  #invoice-document table td p {
+    font-size: 9px !important;
+    margin-top: 1px !important;
+  }
 
-  .inv-totals-inner { gap: 3px !important; }
-  .inv-total-due { font-size: 14px !important; margin-top: 3px !important; padding-top: 3px !important; }
+  /* Smaller totals section */
+  #invoice-document .text-xl {
+    font-size: 15px !important;
+  }
+
+  /* Compact footer */
+  #invoice-document .text-xs {
+    font-size: 9px !important;
+  }
+
+  /* Fix flexbox stretching */
+  #invoice-document .flex-1 {
+    flex: 0 1 auto !important;
+  }
 
   /* No page breaks anywhere inside */
-  .inv-doc * {
+  #invoice-document * {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
 }
 
-/* ═══════════════════════════════════════════════════
-   html2pdf.js rendering  –  mirrors print compaction
-   Applied via JS class toggle before PDF capture
-   ═══════════════════════════════════════════════════ */
+/* html2pdf.js rendering class – mirrors print compaction */
 .pdf-rendering {
   padding: 10mm 12mm !important;
   min-height: 0 !important;
   font-size: 11px !important;
-  box-shadow: none !important;
 }
 
-.pdf-rendering .inv-logo  { font-size: 20px !important; margin-bottom: 1px !important; }
-.pdf-rendering .inv-title { font-size: 20px !important; margin-bottom: 1px !important; }
-.pdf-rendering .inv-tagline { font-size: 10px !important; margin-bottom: 4px !important; }
-.pdf-rendering .inv-contact { font-size: 9px !important; }
+.pdf-rendering .mb-16 { margin-bottom: 10px !important; }
+.pdf-rendering .mb-12 { margin-bottom: 8px !important; }
+.pdf-rendering .mb-8  { margin-bottom: 6px !important; }
+.pdf-rendering .pb-12 { padding-bottom: 6px !important; }
+.pdf-rendering .pt-16 { padding-top: 8px !important; }
+.pdf-rendering .pt-8  { padding-top: 6px !important; }
+.pdf-rendering .mt-8  { margin-top: 6px !important; }
+.pdf-rendering .mt-auto { margin-top: 4px !important; }
 
-.pdf-rendering .inv-header { margin-bottom: 8px !important; padding-bottom: 6px !important; }
-.pdf-rendering .inv-billed { margin-bottom: 8px !important; }
-.pdf-rendering .inv-items  { margin-bottom: 6px !important; }
-.pdf-rendering .inv-totals { padding-top: 6px !important; }
-.pdf-rendering .inv-notes  { margin-top: 4px !important; padding-top: 4px !important; }
-.pdf-rendering .inv-footer { margin-top: 4px !important; padding-top: 4px !important; font-size: 9px !important; }
+.pdf-rendering h1 { font-size: 22px !important; margin-bottom: 2px !important; }
+.pdf-rendering h2 { font-size: 22px !important; }
 
-.pdf-rendering .inv-section-label { font-size: 8px !important; margin-bottom: 3px !important; }
-.pdf-rendering .inv-meta { margin-top: 6px !important; gap: 2px !important; font-size: 9px !important; }
+.pdf-rendering table th {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  font-size: 8px !important;
+}
+.pdf-rendering table td {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  font-size: 11px !important;
+}
+.pdf-rendering table td p {
+  font-size: 9px !important;
+  margin-top: 1px !important;
+}
 
-.pdf-rendering .inv-th { padding: 3px 0 !important; font-size: 8px !important; }
-.pdf-rendering .inv-td { padding: 4px 0 !important; font-size: 11px !important; }
-.pdf-rendering .inv-td-sub { font-size: 9px !important; margin-top: 1px !important; }
-.pdf-rendering .inv-td-discount { font-size: 9px !important; margin-top: 1px !important; }
-
-.pdf-rendering .inv-totals-inner { gap: 3px !important; }
-.pdf-rendering .inv-total-due { font-size: 14px !important; margin-top: 3px !important; padding-top: 3px !important; }
+.pdf-rendering .text-xl { font-size: 15px !important; }
+.pdf-rendering .flex-1 { flex: 0 1 auto !important; }

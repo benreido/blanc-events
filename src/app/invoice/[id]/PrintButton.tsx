@@ -18,11 +18,11 @@ export default function PrintButton({ invoiceNumber, clientName }: { invoiceNumb
             element.classList.add('pdf-rendering');
 
             const opt = {
-                margin: [-0.1, 0, 0, 0] as [number, number, number, number], // Slight negative top margin to pull content up
+                margin: 5, // mm
                 filename: `${clientName || 'Customer'}, ${invoiceNumber || 'Invoice'}.pdf`,
                 image: { type: 'jpeg' as const, quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' as const }
+                html2canvas: { scale: 2, useCORS: true, windowWidth: 800 },
+                jsPDF: { unit: 'mm' as const, format: 'a4', orientation: 'portrait' as const }
             };
 
             await html2pdf().set(opt).from(element).save();

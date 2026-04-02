@@ -26,10 +26,10 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
     const booking = invoice.bookingOrder;
 
     return (
-        <div className="inv-page">
+        <div className="min-h-screen bg-[#f1f5f9] py-12 px-4 print:p-0 print:bg-white flex flex-col items-center">
 
             {/* Quick Actions (Hidden on Print) */}
-            <div className="inv-actions">
+            <div className="max-w-[800px] w-full mb-8 flex items-center justify-between print:hidden">
                 <Link href="/" className="text-sm font-bold tracking-widest uppercase text-[#64748b] hover:text-[#0f172a] transition-colors">
                     <span className="material-symbols-outlined align-middle mr-1 text-[16px]">arrow_back</span>
                     Return to Site
@@ -40,36 +40,36 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             </div>
 
             {/* A4 Document Area */}
-            <div id="invoice-document" className="inv-doc">
+            <div id="invoice-document" className="bg-white w-full max-w-[800px] shadow-lg print:shadow-none min-h-[1131px] print:min-h-0 print:max-h-[296mm] mx-auto p-12 md:p-16 print:p-[12mm] relative flex flex-col rounded-sm print:rounded-none print:overflow-hidden">
 
                 {/* Header */}
-                <div className="inv-header">
+                <div className="flex justify-between items-start mb-16 print:mb-3 border-b border-[#e2e8f0] pb-12 print:pb-3">
                     <div>
-                        <h1 className="inv-logo">Blanc. Events</h1>
-                        <p className="inv-tagline">Premium AV & Event Production</p>
-                        <div className="inv-contact">
+                        <h1 className="text-4xl font-black tracking-tighter text-[#123A2F] mb-1">Blanc. Events</h1>
+                        <p className="text-sm text-[#64748b] mb-6">Premium AV & Event Production</p>
+                        <div className="text-xs text-[#475569] space-y-1">
                             <p>19 Cheetham hill road</p>
                             <p>M4 4FY</p>
                             <p>United Kingdom</p>
-                            <p style={{ marginTop: '8px' }}>hello@blanc-events.co.uk</p>
+                            <p className="mt-2">hello@blanc-events.co.uk</p>
                             <p>07584192578</p>
                         </div>
                     </div>
                     <div className="text-right">
-                        <h2 className="inv-title">Invoice</h2>
-                        <div className="inv-meta">
-                            <p className="inv-meta-row"><span>Invoice Number:</span> <span className="inv-meta-val">{invoice.invoiceNumber}</span></p>
-                            <p className="inv-meta-row"><span>Date Issued:</span> <span className="inv-meta-val">{new Date(invoice.issueDate).toLocaleDateString("en-GB")}</span></p>
-                            <p className="inv-meta-row"><span>Due Date:</span> <span className="inv-meta-val">{invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString("en-GB") : "On Receipt"}</span></p>
-                            <p className="inv-meta-row"><span>Reference:</span> <span className="inv-meta-val uppercase">{booking ? booking.id.slice(0, 8) : invoice.id.slice(0, 8)}</span></p>
+                        <h2 className="text-4xl font-black tracking-tighter text-[#e2e8f0] mb-2 uppercase">Invoice</h2>
+                        <div className="text-xs font-bold text-[#64748b] space-y-2 mt-6">
+                            <p className="flex justify-between gap-8"><span>Invoice Number:</span> <span className="text-[#0f172a]">{invoice.invoiceNumber}</span></p>
+                            <p className="flex justify-between gap-8"><span>Date Issued:</span> <span className="text-[#0f172a]">{new Date(invoice.issueDate).toLocaleDateString("en-GB")}</span></p>
+                            <p className="flex justify-between gap-8"><span>Due Date:</span> <span className="text-[#0f172a]">{invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString("en-GB") : "On Receipt"}</span></p>
+                            <p className="flex justify-between gap-8"><span>Reference:</span> <span className="text-[#0f172a] uppercase">{booking ? booking.id.slice(0, 8) : invoice.id.slice(0, 8)}</span></p>
                         </div>
                     </div>
                 </div>
 
                 {/* Billed To */}
-                <div className="inv-billed">
+                <div className="mb-12 print:mb-3 flex justify-between">
                     <div>
-                        <p className="inv-section-label">Billed To</p>
+                        <p className="text-[10px] font-black tracking-widest uppercase text-[#94a3b8] mb-3">Billed To</p>
                         <h3 className="font-bold text-lg text-[#0f172a] mb-1">{invoice.clientName}</h3>
                         {booking?.company && <p className="text-sm text-[#475569] font-medium mb-1">{booking.company}</p>}
                         <p className="text-sm text-[#64748b] max-w-xs whitespace-pre-wrap">{invoice.clientAddress || booking?.venue}</p>
@@ -78,7 +78,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                     </div>
 
                     <div className="text-right">
-                        <p className="inv-section-label">Event Details</p>
+                        <p className="text-[10px] font-black tracking-widest uppercase text-[#94a3b8] mb-3">Event Details</p>
                         {booking ? (
                             <div className="text-sm text-[#475569] space-y-1 text-right">
                                 <p><span className="font-medium">Dates:</span> {new Date(booking.startDate).toLocaleDateString("en-GB")} - {new Date(booking.endDate).toLocaleDateString("en-GB")}</p>
@@ -95,14 +95,14 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {/* Line Items */}
-                <div className="inv-items">
+                <div className="print:flex-none mb-16 print:mb-3">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b-2 border-[#0f172a]">
-                                <th className="inv-th">Description</th>
-                                <th className="inv-th text-center">Qty / Days</th>
-                                <th className="inv-th text-right">Rate</th>
-                                <th className="inv-th text-right">Amount</th>
+                                <th className="py-3 text-[10px] font-black tracking-widest uppercase text-[#64748b]">Description</th>
+                                <th className="py-3 text-[10px] font-black tracking-widest uppercase text-[#64748b] text-center">Qty / Days</th>
+                                <th className="py-3 text-[10px] font-black tracking-widest uppercase text-[#64748b] text-right">Rate</th>
+                                <th className="py-3 text-[10px] font-black tracking-widest uppercase text-[#64748b] text-right">Amount</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-[#f1f5f9] text-sm">
@@ -114,18 +114,18 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
                                 return (
                                     <tr key={it.id}>
-                                        <td className="inv-td text-[#0f172a]">
+                                        <td className="py-4 text-[#0f172a]">
                                             <span className="font-bold">{it.name}</span>
-                                            {it.description && <p className="inv-td-sub">{it.description}</p>}
+                                            {it.description && <p className="text-xs text-[#64748b] mt-1">{it.description}</p>}
                                             {it.discount > 0 && (
-                                                <p className="inv-td-discount">
+                                                <p className="text-[11px] text-[#059669] font-bold mt-1 uppercase tracking-wider">
                                                     Discount Applied: {it.discountType === "PERCENTAGE" ? `${it.discount}%` : formatCurrency(it.discount)}
                                                 </p>
                                             )}
                                         </td>
-                                        <td className="inv-td text-[#475569] text-center">{it.quantity}</td>
-                                        <td className="inv-td text-[#475569] text-right">{formatCurrency(it.unitPrice)}</td>
-                                        <td className="inv-td text-[#0f172a] font-bold text-right">{formatCurrency(lineTotal)}</td>
+                                        <td className="py-4 text-[#475569] text-center">{it.quantity}</td>
+                                        <td className="py-4 text-[#475569] text-right">{formatCurrency(it.unitPrice)}</td>
+                                        <td className="py-4 text-[#0f172a] font-bold text-right">{formatCurrency(lineTotal)}</td>
                                     </tr>
                                 )
                             })}
@@ -133,38 +133,38 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                             {/* Legacy Booking Items */}
                             {booking?.lineItems?.map((li: any) => (
                                 <tr key={li.id}>
-                                    <td className="inv-td text-[#0f172a]"><span className="font-bold">{li.itemName}</span></td>
-                                    <td className="inv-td text-[#475569] text-center">{li.quantity} &times; {booking.numberOfDays}d</td>
-                                    <td className="inv-td text-[#475569] text-right">{formatCurrency(li.dayRate)}</td>
-                                    <td className="inv-td text-[#0f172a] font-bold text-right">{formatCurrency(li.lineTotal)}</td>
+                                    <td className="py-4 text-[#0f172a]"><span className="font-bold">{li.itemName}</span></td>
+                                    <td className="py-4 text-[#475569] text-center">{li.quantity} &times; {booking.numberOfDays}d</td>
+                                    <td className="py-4 text-[#475569] text-right">{formatCurrency(li.dayRate)}</td>
+                                    <td className="py-4 text-[#0f172a] font-bold text-right">{formatCurrency(li.lineTotal)}</td>
                                 </tr>
                             ))}
                             {/* Legacy DJ Services */}
                             {booking?.djServices?.map((dj: any) => (
                                 <tr key={dj.id}>
-                                    <td className="inv-td text-[#0f172a]"><span className="font-bold">DJ Service: {dj.serviceName}</span></td>
-                                    <td className="inv-td text-[#475569] text-center">1</td>
-                                    <td className="inv-td text-[#475569] text-right">{formatCurrency(dj.priceValue)}</td>
-                                    <td className="inv-td text-[#0f172a] font-bold text-right">{formatCurrency(dj.priceValue)}</td>
+                                    <td className="py-4 text-[#0f172a]"><span className="font-bold">DJ Service: {dj.serviceName}</span></td>
+                                    <td className="py-4 text-[#475569] text-center">1</td>
+                                    <td className="py-4 text-[#475569] text-right">{formatCurrency(dj.priceValue)}</td>
+                                    <td className="py-4 text-[#0f172a] font-bold text-right">{formatCurrency(dj.priceValue)}</td>
                                 </tr>
                             ))}
                             {/* Legacy Addons */}
                             {booking?.serviceAddons?.map((svc: any) => (
                                 <tr key={svc.id}>
-                                    <td className="inv-td text-[#0f172a]"><span className="font-bold">Add-on: {svc.serviceName}</span></td>
-                                    <td className="inv-td text-[#475569] text-center">1</td>
-                                    <td className="inv-td text-[#475569] text-right">{formatCurrency(svc.priceValue)}</td>
-                                    <td className="inv-td text-[#0f172a] font-bold text-right">{formatCurrency(svc.priceValue)}</td>
+                                    <td className="py-4 text-[#0f172a]"><span className="font-bold">Add-on: {svc.serviceName}</span></td>
+                                    <td className="py-4 text-[#475569] text-center">1</td>
+                                    <td className="py-4 text-[#475569] text-right">{formatCurrency(svc.priceValue)}</td>
+                                    <td className="py-4 text-[#0f172a] font-bold text-right">{formatCurrency(svc.priceValue)}</td>
                                 </tr>
                             ))}
 
                             {/* Adjustments / Extras */}
                             {invoice.adjustments && invoice.adjustments.map((adj: any) => (
                                 <tr key={adj.id}>
-                                    <td className="inv-td text-[#0f172a] italic" colSpan={3}>
+                                    <td className="py-4 text-[#0f172a] italic" colSpan={3}>
                                         {adj.name || adj.type} {adj.description && <span className="text-[#64748b] text-xs">- {adj.description}</span>}
                                     </td>
-                                    <td className="inv-td text-[#0f172a] font-bold text-right">{adj.type === 'DISCOUNT' ? '-' : ''}{formatCurrency(Math.abs(adj.amount))}</td>
+                                    <td className="py-4 text-[#0f172a] font-bold text-right">{adj.type === 'DISCOUNT' ? '-' : ''}{formatCurrency(Math.abs(adj.amount))}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -172,8 +172,8 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {/* Totals */}
-                <div className="inv-totals">
-                    <div className="inv-totals-inner">
+                <div className="flex justify-end pt-8 print:pt-2 border-t-2 border-[#0f172a]">
+                    <div className="w-64 space-y-3">
                         <div className="flex justify-between text-sm text-[#475569]">
                             <span>Subtotal</span>
                             <span>{formatCurrency(invoice.subtotal)}</span>
@@ -188,7 +188,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                             <span>VAT (20%)</span>
                             <span>{formatCurrency(invoice.vatAmount)}</span>
                         </div>
-                        <div className="inv-total-due">
+                        <div className="flex justify-between text-xl font-black text-[#123A2F] border-t border-[#e2e8f0] mt-3 pt-3 mb-1">
                             <span>Total Due</span>
                             <span>{formatCurrency(invoice.total)}</span>
                         </div>
@@ -214,17 +214,17 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {invoice.notes && (
-                    <div className="inv-notes">
-                        <p className="inv-section-label" style={{ marginBottom: '8px' }}>Notes & Terms</p>
+                    <div className="mt-8 print:mt-2 pt-8 print:pt-2 border-t border-[#f1f5f9]">
+                        <p className="text-[10px] font-black tracking-widest uppercase text-[#94a3b8] mb-2">Notes & Terms</p>
                         <p className="text-sm text-[#475569] whitespace-pre-wrap">{invoice.notes}</p>
                     </div>
                 )}
 
                 {/* Footer Notes */}
-                <div className="inv-footer">
+                <div className="mt-auto print:mt-2 pt-16 print:pt-2 border-t border-[#e2e8f0] text-xs text-[#64748b] text-center">
                     <p className="font-bold text-[#0f172a] mb-1">Payment Details</p>
                     <p>Bank Transfer: Blanc Collective LTD | Sort: 04-00-05 | Acct: 95990226</p>
-                    <p style={{ marginTop: '16px' }}>Payment is required 7 days prior to event commencement. Standard terms and conditions apply.</p>
+                    <p className="mt-4">Payment is required 7 days prior to event commencement. Standard terms and conditions apply.</p>
                 </div>
 
                 {invoice.status === "PAID" && (
