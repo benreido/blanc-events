@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
             startTime: data.startTime,
             endTime: data.endTime,
             clientName: data.clientName,
-            clientEmail: data.clientEmail,
+            clientEmail: data.clientEmail || "",
             clientPhone: data.clientPhone || "",
             notes: data.notes || "",
         },
@@ -176,7 +176,7 @@ export async function POST(req: NextRequest) {
         startTime: data.startTime,
         endTime: data.endTime,
         clientName: data.clientName,
-        clientEmail: data.clientEmail,
+        clientEmail: data.clientEmail || "",
         clientPhone: data.clientPhone || "",
         notes: data.notes || "",
     }).catch(console.error);
