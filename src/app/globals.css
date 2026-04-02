@@ -244,8 +244,8 @@
   #invoice-document {
     width: 210mm !important;
     min-height: 0 !important;
-    max-height: 296mm !important;
-    padding: 12mm 14mm !important;
+    max-height: 287mm !important;
+    padding: 10mm 12mm !important;
     margin: 0 !important;
     box-shadow: none !important;
     border-radius: 0 !important;
