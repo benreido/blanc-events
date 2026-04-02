@@ -234,8 +234,7 @@
     background: white !important;
   }
 
-  /* Hide everything except the invoice */
-  body > *:not(#__next),
+  /* Hide navigation chrome (invoice actions use Tailwind print:hidden) */
   nav, footer, header {
     display: none !important;
   }
