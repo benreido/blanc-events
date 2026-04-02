@@ -28,7 +28,7 @@ function calcPrice(startTime: string | undefined, endTime: string | undefined) {
     if (!startTime || !endTime) return null;
     const [sH, sM] = startTime.split(":").map(Number);
     const [eH, eM] = endTime.split(":").map(Number);
-    let startDec = sH + sM / 60;
+    const startDec = sH + sM / 60;
     let endDec = eH + eM / 60;
     if (endDec <= startDec) endDec += 24;
 
