@@ -40,6 +40,7 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
     const [invoiceNumber, setInvoiceNumber] = useState(initialData?.invoiceNumber || "");
     const [status, setStatus] = useState(initialData?.status || "DRAFT");
     const [dueDate, setDueDate] = useState<string>(initialData?.dueDate ? new Date(initialData.dueDate).toISOString().split('T')[0] : "");
+    const [eventDate, setEventDate] = useState<string>(initialData?.eventDate ? new Date(initialData.eventDate).toISOString().split('T')[0] : "");
     const [notes, setNotes] = useState(initialData?.notes || "");
 
     // Client State
@@ -204,7 +205,7 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
     const handleSave = async () => {
         setLoading(true);
         const payload = {
-            invoiceNumber, status, dueDate, notes,
+            invoiceNumber, status, dueDate, eventDate, notes,
             clientId, clientName, clientEmail, clientAddress,
             items, adjustments,
             ...totals
@@ -373,7 +374,11 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
                             </div>
                         )}
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-100 pt-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-100 pt-6">
+                            <div>
+                                <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Event Date</label>
+                                <input type="date" value={eventDate} onChange={e => setEventDate(e.target.value)} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1F5C4B]" />
+                            </div>
                             <div>
                                 <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">Due Date</label>
                                 <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1F5C4B]" />

@@ -363,6 +363,7 @@ model Invoice {
   status           String       @default("DRAFT") // DRAFT, SENT, VIEWED, PARTIALLY_PAID, PAID, OVERDUE, CANCELLED, REFUNDED
   issueDate        DateTime     @default(now())
   dueDate          DateTime?
+  eventDate        DateTime?
   subtotal         Float
   discount         Float        @default(0)
   vatAmount        Float        @default(0)

@@ -11,6 +11,7 @@ function AdminSidebar() {
 
     const links = [
         { href: "/admin", icon: "dashboard", label: "Dashboard" },
+        { href: "/admin/calendar", icon: "calendar_month", label: "Calendar" },
         { href: "/admin/equipment", icon: "speaker", label: "Equipment" },
         { href: "/admin/packages", icon: "inventory_2", label: "Packages" },
         { href: "/admin/dj-services", icon: "headphones", label: "DJ Services" },

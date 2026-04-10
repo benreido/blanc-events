@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
             clientEmail: data.clientEmail || "",
             clientAddress: data.clientAddress || "",
             dueDate: data.dueDate ? new Date(data.dueDate) : null,
+            eventDate: data.eventDate ? new Date(data.eventDate) : null,
             subtotal: data.subtotal,
             vatAmount: data.vatAmount,
             discount: data.discount || 0,
