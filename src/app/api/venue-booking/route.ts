@@ -3,19 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { venueBookingSchema } from "@/lib/validations";
 import { sendVenueBookingNotification } from "@/lib/email";
 
-// Simple in-memory rate limiter
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-function rateLimit(ip: string, maxReqs = 5, windowMs = 60000): boolean {
-    const now = Date.now();
-    const entry = rateLimitMap.get(ip);
-    if (!entry || now > entry.resetAt) {
-        rateLimitMap.set(ip, { count: 1, resetAt: now + windowMs });
-        return true;
-    }
-    if (entry.count >= maxReqs) return false;
-    entry.count++;
-    return true;
-}
+import { rateLimit } from "@/lib/rateLimit";
 
 // ── Alder Root pricing rules ──
 // Base rate: 7pm–midnight (5 hrs) = £275

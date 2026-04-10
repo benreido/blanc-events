@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import Stripe from "stripe";
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_123", {
-    apiVersion: "2025-02-24.acacia",
-});
+import { getStripe } from "@/lib/stripe";
 
 export async function POST(req: Request) {
     try {
@@ -37,7 +33,7 @@ export async function POST(req: Request) {
                 subtotal,
                 vatAmount: vat,
                 total,
-                depositAmount: total * 0.25, // Assuming 25% config
+                depositAmount: total * 0.25,
                 notes: `Event Type: ${eventType}\nTimes: ${startTime} - ${endTime}\nSetup: ${setupRequired}\nSpecial: ${specialRequests}`,
             }
         });
@@ -113,7 +109,7 @@ export async function POST(req: Request) {
             data: {
                 bookingOrderId: booking.id,
                 invoiceNumber,
-                status: "ISSUED",
+                status: "DRAFT",
                 subtotal,
                 vatAmount: vat,
                 total,
@@ -132,7 +128,7 @@ export async function POST(req: Request) {
         });
 
         // Generate Stripe Checkout Session
-        const session = await stripe.checkout.sessions.create({
+        const session = await getStripe().checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
             success_url: `${process.env.NEXT_PUBLIC_APP_URL}/book/success?id=${booking.id}&session_id={CHECKOUT_SESSION_ID}`,

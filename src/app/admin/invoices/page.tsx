@@ -265,11 +265,18 @@ export default function AdminInvoicesPage() {
 
     async function handleDuplicate(invoice: Invoice) {
         setDuplicating(invoice.id);
-        const res = await fetch(`/api/admin/invoices/${invoice.id}/duplicate`, { method: "POST" });
-        const data = await res.json();
-        setDuplicating(null);
-        if (data.success) {
+        try {
+            const res = await fetch(`/api/admin/invoices/${invoice.id}/duplicate`, { method: "POST" });
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                alert(data.error || "Failed to duplicate invoice");
+                return;
+            }
             router.push(`/admin/invoices/${data.invoice.id}/edit`);
+        } catch {
+            alert("Failed to duplicate invoice");
+        } finally {
+            setDuplicating(null);
         }
     }
 

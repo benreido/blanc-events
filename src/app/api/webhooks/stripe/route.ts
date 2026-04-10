@@ -11,8 +11,13 @@ export async function POST(req: NextRequest) {
 
     const body = await req.text();
     let event;
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    if (!webhookSecret) {
+        console.error("STRIPE_WEBHOOK_SECRET is not set");
+        return NextResponse.json({ error: "Webhook not configured" }, { status: 500 });
+    }
     try {
-        event = getStripe().webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET || "");
+        event = getStripe().webhooks.constructEvent(body, sig, webhookSecret);
     } catch {
         return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }

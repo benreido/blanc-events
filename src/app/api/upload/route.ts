@@ -12,16 +12,18 @@ export async function POST(request: Request): Promise<NextResponse> {
             return NextResponse.json({ error: 'Filename and bookingOrderId are required' }, { status: 400 });
         }
 
-        let uploadUrl = "";
-        try {
-            const blob = await put(`id-verification/${bookingOrderId}/${filename}`, request.body!, {
-                access: 'public', // Set to public for the purpose of the demo unless secure retrieval is wired
-            });
-            uploadUrl = blob.url;
-        } catch (e) {
-            console.warn("Vercel Blob upload failed (likely missing token). Simulating success for database.");
-            uploadUrl = `https://mock-storage.com/${bookingOrderId}/${filename}`;
+        const blob = await put(`id-verification/${bookingOrderId}/${filename}`, request.body!, {
+            access: 'public',
+        }).catch((e: any) => {
+            console.error("Vercel Blob upload failed:", e.message);
+            return null;
+        });
+
+        if (!blob) {
+            return NextResponse.json({ error: "File upload failed. Please check BLOB_READ_WRITE_TOKEN is configured." }, { status: 500 });
         }
+
+        const uploadUrl = blob.url;
 
         // 2. Link Identity Document to booking order in DB
         const identityDoc = await prisma.identityDocument.create({
