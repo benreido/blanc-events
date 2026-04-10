@@ -14,20 +14,27 @@ export async function GET(req: NextRequest) {
     const start = new Date(year, month - 1, 1);
     const end = new Date(year, month, 1);
 
-    const [bookings, venueBookings, invoices] = await Promise.all([
+    const [bookings, venueBookings, invoiceEvents, invoiceDues] = await Promise.all([
         prisma.bookingOrder.findMany({
             where: { startDate: { gte: start, lt: end } },
-            select: { id: true, customerName: true, venue: true, startDate: true, endDate: true, status: true, total: true },
+            select: { id: true, customerName: true, customerEmail: true, customerPhone: true, venue: true, startDate: true, endDate: true, status: true, total: true, numberOfDays: true },
         }),
         prisma.venueBooking.findMany({
             where: { eventDate: { gte: start, lt: end } },
-            select: { id: true, clientName: true, venue: true, eventDate: true, eventType: true, status: true },
+            select: { id: true, clientName: true, clientEmail: true, clientPhone: true, venue: true, eventDate: true, eventType: true, startTime: true, endTime: true, status: true },
         }),
         prisma.invoice.findMany({
             where: { eventDate: { gte: start, lt: end } },
-            select: { id: true, clientName: true, invoiceNumber: true, eventDate: true, status: true, total: true },
+            select: { id: true, clientName: true, clientEmail: true, invoiceNumber: true, eventDate: true, status: true, total: true, balanceDue: true },
+        }),
+        prisma.invoice.findMany({
+            where: {
+                dueDate: { gte: start, lt: end },
+                status: { notIn: ["PAID", "CANCELLED"] },
+            },
+            select: { id: true, clientName: true, clientEmail: true, invoiceNumber: true, dueDate: true, status: true, total: true, balanceDue: true },
         }),
     ]);
 
-    return NextResponse.json({ bookings, venueBookings, invoices });
+    return NextResponse.json({ bookings, venueBookings, invoiceEvents, invoiceDues });
 }
