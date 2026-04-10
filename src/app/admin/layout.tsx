@@ -20,6 +20,7 @@ function AdminSidebar() {
         { href: "/admin/quotes", icon: "request_quote", label: "Quotes" },
         { href: "/admin/invoices", icon: "receipt_long", label: "Invoices" },
         { href: "/admin/enquiries", icon: "mail", label: "Enquiries" },
+        { href: "/admin/venue-bookings", icon: "golf_course", label: "Alder Root" },
     ];
 
     return (
