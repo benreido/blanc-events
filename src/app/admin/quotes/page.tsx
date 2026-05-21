@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { formatCurrency } from "@/lib/config";
 import { format } from "date-fns";
 
@@ -11,8 +12,11 @@ interface Quote {
 }
 
 export default function AdminQuotesPage() {
+    const router = useRouter();
     const [quotes, setQuotes] = useState<Quote[]>([]);
     const [loading, setLoading] = useState(true);
+    const [converting, setConverting] = useState<string | null>(null);
+    const [toInvoice, setToInvoice] = useState<string | null>(null);
 
     const fetchQuotes = () => {
         setLoading(true);
@@ -21,12 +25,44 @@ export default function AdminQuotesPage() {
 
     useEffect(fetchQuotes, []);
 
-    const handleConvert = async (id: string) => {
-        await fetch("/api/admin/quotes", {
-            method: "PUT", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id, action: "convert_to_booking" }),
-        });
-        fetchQuotes();
+    const handleConvertToBooking = async (id: string) => {
+        setConverting(id);
+        try {
+            const res = await fetch("/api/admin/quotes", {
+                method: "PUT", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, action: "convert_to_booking" }),
+            });
+            if (!res.ok) {
+                const data = await res.json();
+                alert(data.error || "Failed to convert to booking");
+                return;
+            }
+            fetchQuotes();
+        } catch {
+            alert("Failed to convert to booking");
+        } finally {
+            setConverting(null);
+        }
+    };
+
+    const handleConvertToInvoice = async (id: string) => {
+        setToInvoice(id);
+        try {
+            const res = await fetch("/api/admin/quotes", {
+                method: "PUT", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, action: "convert_to_invoice" }),
+            });
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                alert(data.error || "Failed to create invoice");
+                return;
+            }
+            router.push(`/admin/invoices/${data.invoiceId}/edit`);
+        } catch {
+            alert("Failed to create invoice");
+        } finally {
+            setToInvoice(null);
+        }
     };
 
     return (
@@ -70,10 +106,23 @@ export default function AdminQuotesPage() {
                                 </div>
                             )}
                             {q.status === "QUOTE_REQUESTED" && (
-                                <button onClick={() => handleConvert(q.id)}
-                                    className="px-6 py-2 bg-[#1F5C4B] text-white text-xs font-bold rounded-lg uppercase tracking-widest hover:bg-[#123A2F]">
-                                    Convert to Booking
-                                </button>
+                                <div className="flex flex-wrap gap-3">
+                                    <button
+                                        onClick={() => handleConvertToBooking(q.id)}
+                                        disabled={converting === q.id}
+                                        className="px-6 py-2 bg-[#1F5C4B] text-white text-xs font-bold rounded-lg uppercase tracking-widest hover:bg-[#123A2F] disabled:opacity-50 transition-colors"
+                                    >
+                                        {converting === q.id ? "Converting…" : "Convert to Booking"}
+                                    </button>
+                                    <button
+                                        onClick={() => handleConvertToInvoice(q.id)}
+                                        disabled={toInvoice === q.id}
+                                        className="px-6 py-2 bg-white border border-[#1F5C4B] text-[#1F5C4B] text-xs font-bold rounded-lg uppercase tracking-widest hover:bg-[#1F5C4B]/5 disabled:opacity-50 transition-colors flex items-center gap-2"
+                                    >
+                                        <span className="material-symbols-outlined text-[14px]">receipt_long</span>
+                                        {toInvoice === q.id ? "Creating…" : "Create Invoice"}
+                                    </button>
+                                </div>
                             )}
                         </div>
                     ))}

@@ -73,6 +73,23 @@ const VENUE_CLIENTS: Record<string, { name: string; email: string }> = {
     CLUBHOUSE: { name: "Lets Celebrate Ltd", email: "" },
 };
 
+export async function GET() {
+    const bookings = await prisma.venueBooking.findMany({
+        orderBy: { eventDate: "asc" },
+        select: {
+            id: true,
+            venue: true,
+            eventDate: true,
+            eventType: true,
+            startTime: true,
+            endTime: true,
+            clientName: true,
+            status: true,
+        },
+    });
+    return NextResponse.json(bookings);
+}
+
 export async function POST(req: NextRequest) {
     const ip = req.headers.get("x-forwarded-for") || "unknown";
     if (!rateLimit(ip)) {
@@ -156,7 +173,7 @@ export async function POST(req: NextRequest) {
         include: { items: true },
     });
 
-    // 6. Send email notification
+    // 6. Send email notification + client confirmation
     await sendVenueBookingNotification({
         venue: data.venue,
         eventDate: data.eventDate,
@@ -167,6 +184,9 @@ export async function POST(req: NextRequest) {
         clientEmail: data.clientEmail || "",
         clientPhone: data.clientPhone || "",
         notes: data.notes || "",
+        total,
+        invoiceNumber,
+        invoiceId: invoice.id,
     }).catch(console.error);
 
     return NextResponse.json({

@@ -12,6 +12,7 @@ function AdminSidebar() {
     const links = [
         { href: "/admin", icon: "dashboard", label: "Dashboard" },
         { href: "/admin/calendar", icon: "calendar_month", label: "Calendar" },
+        { href: "/admin/reports", icon: "bar_chart", label: "Reports" },
         { href: "/admin/equipment", icon: "speaker", label: "Equipment" },
         { href: "/admin/packages", icon: "inventory_2", label: "Packages" },
         { href: "/admin/dj-services", icon: "headphones", label: "DJ Services" },
@@ -20,6 +21,7 @@ function AdminSidebar() {
         { href: "/admin/bookings", icon: "event_available", label: "Bookings" },
         { href: "/admin/quotes", icon: "request_quote", label: "Quotes" },
         { href: "/admin/invoices", icon: "receipt_long", label: "Invoices" },
+        { href: "/admin/contracts", icon: "autorenew", label: "Contracts" },
         { href: "/admin/enquiries", icon: "mail", label: "Enquiries" },
         { href: "/admin/venue-bookings", icon: "golf_course", label: "Alder Root" },
     ];

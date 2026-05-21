@@ -356,6 +356,33 @@ model BookingDJService {
   djService      DJService    @relation(fields: [djServiceId], references: [id])
 }
 
+model RecurringContract {
+  id                String    @id @default(cuid())
+  title             String
+  status            String    @default("ACTIVE") // ACTIVE, PAUSED, CANCELLED, COMPLETED
+  clientName        String
+  clientEmail       String
+  clientAddress     String    @default("")
+  clientId          String?
+  client            Client?   @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  contractStart     DateTime
+  contractEnd       DateTime
+  billingDay        Int       @default(1)
+  monthlyAmount     Float
+  vatRate           Float     @default(0.20)
+  nextBillingDate   DateTime
+  invoicesGenerated Int       @default(0)
+  maxInvoices       Int
+  lineItems         Json
+  notes             String    @default("")
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  invoices          Invoice[]
+
+  @@index([status])
+  @@index([nextBillingDate])
+}
+
 model Invoice {
   id               String       @id @default(cuid())
   bookingOrderId   String?      @unique
@@ -378,11 +405,14 @@ model Invoice {
   notes            String       @default("")
   businessDetails  Json?        // Snapshot of our business details at time of issue
   lineItems        Json?        // Deprecated: Snapshot of line items for old invoices
-  
+
   sentAt           DateTime?
   viewedAt         DateTime?
   paidAt           DateTime?
-  
+
+  contractId       String?
+  contract         RecurringContract? @relation(fields: [contractId], references: [id], onDelete: SetNull)
+
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
   bookingOrder     BookingOrder? @relation(fields: [bookingOrderId], references: [id], onDelete: SetNull)
@@ -393,10 +423,11 @@ model Invoice {
   items            InvoiceItem[]
   adjustments      InvoiceAdjustment[]
   payments         InvoicePayment[]
-  
+
   @@index([status])
   @@index([invoiceNumber])
   @@index([clientId])
+  @@index([contractId])
 }
 
 model InvoiceItem {
@@ -442,6 +473,7 @@ model Client {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   invoices  Invoice[]
+  contracts RecurringContract[]
 }
 
 model InvoicePayment {

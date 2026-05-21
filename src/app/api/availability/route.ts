@@ -16,12 +16,13 @@ export async function POST(req: NextRequest) {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
+    if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) {
+        return NextResponse.json({ error: "Invalid date range" }, { status: 400 });
+    }
+
     // Expire old holds first
     await prisma.inventoryReservation.updateMany({
-        where: {
-            status: "HOLD",
-            expiresAt: { lt: new Date() },
-        },
+        where: { status: "HOLD", expiresAt: { lt: new Date() } },
         data: { status: "EXPIRED" },
     });
 
@@ -29,23 +30,37 @@ export async function POST(req: NextRequest) {
         items.map(async (item) => {
             const equipment = await prisma.equipmentItem.findUnique({
                 where: { id: item.equipmentItemId },
-                select: { id: true, name: true },
+                select: { id: true, name: true, quantityTotal: true },
             });
 
             if (!equipment) {
-                return { equipmentItemId: item.equipmentItemId, status: "NOT_FOUND", available: true, maxQuantity: 999 };
+                return { equipmentItemId: item.equipmentItemId, status: "NOT_FOUND", available: false, maxQuantity: 0 };
             }
 
-            // Soft Inventory logic: never block bookings due to quantity.
-            // Always allow requests, always show "Available on request".
+            // Sum all active reservations overlapping the requested date range
+            const reservations = await prisma.inventoryReservation.aggregate({
+                where: {
+                    equipmentItemId: item.equipmentItemId,
+                    status: { in: ["HOLD", "CONFIRMED"] },
+                    startDate: { lt: end },
+                    endDate: { gt: start },
+                },
+                _sum: { quantityReserved: true },
+            });
+
+            const reserved = reservations._sum.quantityReserved ?? 0;
+            const available = Math.max(0, equipment.quantityTotal - reserved);
+            const canFulfil = available >= item.quantity;
+
             return {
                 equipmentItemId: item.equipmentItemId,
                 name: equipment.name,
-                quantityTotal: 999,
-                reserved: 0,
-                status: "AVAILABLE_ON_REQUEST",
-                available: true,
-                maxQuantity: 999,
+                quantityTotal: equipment.quantityTotal,
+                reserved,
+                available,
+                requested: item.quantity,
+                status: canFulfil ? "AVAILABLE" : available > 0 ? "PARTIALLY_AVAILABLE" : "UNAVAILABLE",
+                canFulfil,
             };
         })
     );

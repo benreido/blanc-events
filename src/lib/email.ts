@@ -11,7 +11,7 @@ async function sendEmail(to: string, subject: string, html: string) {
         console.log(html);
         return;
     }
-    const fromEmail = process.env.NODE_ENV === "development" ? "onboarding@resend.dev" : "hello@blanc-events.co.uk";
+    const fromEmail = "hello@blanc-events.co.uk";
 
     const { data, error } = await resend.emails.send({
         from: `${siteConfig.name} <${fromEmail}>`,
@@ -182,6 +182,38 @@ export async function sendPaymentLink(to: string, customerName: string, amount: 
     await sendEmail(to, "Payment Link – Blanc. Events", html);
 }
 
+export async function sendPaymentReminder(invoice: {
+    clientEmail: string;
+    clientName: string;
+    invoiceNumber: string;
+    balanceDue: number;
+    dueDate: string;
+    id: string;
+    daysUntilDue: number;
+}) {
+    const invoiceUrl = `${siteConfig.url}/invoice/${invoice.id}`;
+    const urgency = invoice.daysUntilDue <= 1 ? "tomorrow" : `in ${invoice.daysUntilDue} days`;
+    const subject = invoice.daysUntilDue <= 1
+        ? `Payment due tomorrow – Invoice ${invoice.invoiceNumber}`
+        : `Payment reminder – Invoice ${invoice.invoiceNumber} due in ${invoice.daysUntilDue} days`;
+
+    const html = emailWrapper(`
+    <h2 style="color:#123A2F;margin-top:0;">Payment Reminder</h2>
+    <p>Hi ${invoice.clientName},</p>
+    <p>This is a friendly reminder that payment for invoice <strong>${invoice.invoiceNumber}</strong> is due <strong>${urgency}</strong> (${invoice.dueDate}).</p>
+    <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:16px;margin:16px 0;">
+      <p style="margin:0;color:#9a3412;font-weight:700;font-size:18px;">Balance Due: ${formatCurrency(invoice.balanceDue)}</p>
+    </div>
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${invoiceUrl}" style="display:inline-block;background:#1F5C4B;color:white;padding:16px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:0.5px;">View Invoice & Pay Online</a>
+    </div>
+    <p style="color:#64748b;font-size:13px;"><strong>Bank transfer:</strong> Blanc Collective LTD | Sort: 04-00-05 | Acct: 95990226</p>
+    <p style="color:#64748b;font-size:13px;">Questions? Reply to this email or call <strong>${siteConfig.contactPhone}</strong>.</p>
+  `);
+
+    await sendEmail(invoice.clientEmail, subject, html);
+}
+
 export async function sendVenueBookingNotification(booking: {
     venue: string;
     eventDate: string;
@@ -192,26 +224,102 @@ export async function sendVenueBookingNotification(booking: {
     clientEmail: string;
     clientPhone: string;
     notes: string;
+    total?: number;
+    invoiceNumber?: string;
+    invoiceId?: string;
 }) {
     const venueLabel = booking.venue === "MARQUEE" ? "Marquee" : "Clubhouse";
+    const venueCompany = booking.venue === "MARQUEE" ? "Alder Root Events & Weddings" : "Lets Celebrate Ltd";
 
-    const adminHtml = emailWrapper(`
-    <h2 style="color:#123A2F;margin-top:0;">New Alder Root Booking Request</h2>
-    <p style="color:#64748b;font-size:13px;margin-bottom:24px;">A new venue booking request has been submitted via the Alder Root Golf Club form.</p>
+    const formattedDate = (() => {
+        try {
+            return new Date(booking.eventDate).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+        } catch { return booking.eventDate; }
+    })();
+
+    const ALDER_ROOT_MANAGER = "office@alderrootgolfclub.com";
+    const subject = `Alder Root Booking: ${booking.eventType} – ${venueLabel} – ${formattedDate}`;
+
+    // ── Manager email — full invoice details ──────────────────
+    const managerHtml = emailWrapper(`
+    <h2 style="color:#123A2F;margin-top:0;">New Booking — ${venueLabel}</h2>
+    <p style="color:#64748b;font-size:13px;margin-bottom:24px;">A new booking has been logged for ${venueCompany}.</p>
     <table style="width:100%;border-collapse:collapse;">
-    <tr><td style="padding:10px 0;color:#64748b;width:140px;border-bottom:1px solid #f1f5f9;">Venue:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${venueLabel}</td></tr>
-    <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Event Type:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${booking.eventType}</td></tr>
-    <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Date:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${booking.eventDate}</td></tr>
+    <tr><td style="padding:10px 0;color:#64748b;width:140px;border-bottom:1px solid #f1f5f9;">Event:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${booking.eventType}</td></tr>
+    <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Date:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${formattedDate}</td></tr>
     <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Time:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${booking.startTime} – ${booking.endTime}</td></tr>
     <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Client:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${booking.clientName}</td></tr>
-    <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Email:</td><td style="padding:10px 0;border-bottom:1px solid #f1f5f9;">${booking.clientEmail}</td></tr>
+    <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Email:</td><td style="padding:10px 0;border-bottom:1px solid #f1f5f9;">${booking.clientEmail || "—"}</td></tr>
     <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Phone:</td><td style="padding:10px 0;border-bottom:1px solid #f1f5f9;">${booking.clientPhone || "—"}</td></tr>
+    ${booking.invoiceNumber ? `<tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Invoice:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${booking.invoiceNumber}</td></tr>` : ""}
+    ${booking.total !== undefined ? `<tr><td style="padding:10px 0;color:#64748b;">Amount Due:</td><td style="padding:10px 0;font-weight:700;font-size:18px;color:#123A2F;">£${booking.total.toFixed(2)}</td></tr>` : ""}
     </table>
     ${booking.notes ? `<div style="background:#f8fafc;border-radius:8px;padding:16px;margin-top:20px;">
-    <p style="margin:0 0 4px 0;color:#64748b;font-size:12px;text-transform:uppercase;font-weight:700;letter-spacing:0.5px;">Additional Notes</p>
+    <p style="margin:0 0 4px 0;color:#64748b;font-size:12px;text-transform:uppercase;font-weight:700;letter-spacing:0.5px;">Notes</p>
     <p style="margin:0;color:#334155;">${booking.notes}</p>
     </div>` : ""}
+    ${booking.invoiceId ? `<div style="text-align:center;margin-top:28px;">
+    <a href="${siteConfig.url}/invoice/${booking.invoiceId}" style="display:inline-block;background:#1F5C4B;color:white;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:0.5px;">View & Pay Invoice</a>
+    </div>
+    <p style="text-align:center;color:#94a3b8;font-size:12px;margin-top:8px;">Bank transfer: Blanc Collective LTD | Sort: 04-00-05 | Acct: 95990226</p>` : ""}
   `);
 
-    await sendEmail(siteConfig.contactEmail, `Alder Root Booking: ${booking.eventType} – ${venueLabel} – ${booking.eventDate}`, adminHtml);
+    await sendEmail(siteConfig.contactEmail, subject, managerHtml);
+    await sendEmail(ALDER_ROOT_MANAGER, subject, managerHtml);
+
+    // ── Customer email — friendly confirmation, no invoice details ──
+    if (booking.clientEmail) {
+        const customerHtml = emailWrapper(`
+        <h2 style="color:#123A2F;margin-top:0;">You're booked in! 🎉</h2>
+        <p style="font-size:16px;">Hi ${booking.clientName},</p>
+        <p style="color:#475569;line-height:1.6;">We're looking forward to celebrating with you at Alder Root Golf Club. Here's a summary of your booking — keep this somewhere safe!</p>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:24px;margin:24px 0;">
+          <table style="width:100%;border-collapse:collapse;">
+          <tr><td style="padding:8px 0;color:#166534;width:100px;font-size:14px;">Venue</td><td style="padding:8px 0;font-weight:700;color:#166534;font-size:14px;">${venueLabel}, Alder Root Golf Club</td></tr>
+          <tr><td style="padding:8px 0;color:#166534;font-size:14px;">Event</td><td style="padding:8px 0;font-weight:700;color:#166534;font-size:14px;">${booking.eventType}</td></tr>
+          <tr><td style="padding:8px 0;color:#166534;font-size:14px;">Date</td><td style="padding:8px 0;font-weight:700;color:#166534;font-size:14px;">${formattedDate}</td></tr>
+          <tr><td style="padding:8px 0;color:#166534;font-size:14px;">Time</td><td style="padding:8px 0;font-weight:700;color:#166534;font-size:14px;">${booking.startTime} – ${booking.endTime}</td></tr>
+          </table>
+        </div>
+        <p style="color:#475569;line-height:1.6;">If you have any questions about your event or need to make changes, just get in touch and we'll be happy to help.</p>
+        <p style="color:#475569;"><strong>Email:</strong> ${siteConfig.contactEmail}<br/><strong>Phone:</strong> ${siteConfig.contactPhone}</p>
+        <p style="color:#475569;line-height:1.6;">We can't wait to make it a great one. See you soon!</p>
+        <p style="color:#475569;">— The team at Blanc. Events &amp; Alder Root Golf Club</p>
+      `);
+
+        await sendEmail(booking.clientEmail, `Booking Confirmed – ${booking.eventType} at Alder Root Golf Club, ${formattedDate}`, customerHtml);
+    }
+}
+
+export async function sendContractInvoice(invoice: {
+    invoiceNumber: string;
+    clientName: string;
+    clientEmail: string;
+    total: number;
+    balanceDue: number;
+    dueDate: string;
+    contractTitle: string;
+    invoiceId: string;
+    month: string; // e.g. "May 2025"
+}) {
+    const invoiceUrl = `${process.env.NEXT_PUBLIC_BASE_URL ?? "https://blanc-events.co.uk"}/invoice/${invoice.invoiceId}`;
+    const subject = `Invoice ${invoice.invoiceNumber} – ${invoice.contractTitle} (${invoice.month})`;
+
+    const html = emailWrapper(`
+    <h2 style="color:#123A2F;margin-top:0;">Monthly Invoice</h2>
+    <p>Hi ${invoice.clientName},</p>
+    <p>Please find your invoice for <strong>${invoice.contractTitle}</strong> for <strong>${invoice.month}</strong>.</p>
+    <table style="width:100%;border-collapse:collapse;margin:16px 0;">
+      <tr><td style="padding:10px 0;color:#64748b;width:140px;border-bottom:1px solid #f1f5f9;">Invoice:</td><td style="padding:10px 0;font-weight:600;border-bottom:1px solid #f1f5f9;">${invoice.invoiceNumber}</td></tr>
+      <tr><td style="padding:10px 0;color:#64748b;border-bottom:1px solid #f1f5f9;">Amount Due:</td><td style="padding:10px 0;font-weight:700;color:#123A2F;border-bottom:1px solid #f1f5f9;">${formatCurrency(invoice.balanceDue)}</td></tr>
+      <tr><td style="padding:10px 0;color:#64748b;">Payment Due:</td><td style="padding:10px 0;font-weight:600;">${invoice.dueDate}</td></tr>
+    </table>
+    <div style="text-align:center;margin:32px 0;">
+      <a href="${invoiceUrl}" style="display:inline-block;background:#1F5C4B;color:white;padding:16px 32px;border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;letter-spacing:0.5px;">View Invoice & Pay Online</a>
+    </div>
+    <p style="color:#64748b;font-size:13px;"><strong>Bank transfer:</strong> Blanc Collective LTD | Sort: 04-00-05 | Acct: 95990226</p>
+    <p style="color:#64748b;font-size:13px;">Questions? Reply to this email or call <strong>${siteConfig.contactPhone}</strong>.</p>
+  `);
+
+    await sendEmail(invoice.clientEmail, subject, html);
 }

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/config";
 import Link from "next/link";
 import PrintButton from "./PrintButton";
+import PayNowButton from "./PayNowButton";
 
 export default async function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -25,6 +26,11 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
     const booking = invoice.bookingOrder;
 
+    const isPaid = invoice.status === "PAID";
+    const isCancelled = ["CANCELLED", "REFUNDED"].includes(invoice.status);
+    const amountDue = invoice.balanceDue > 0 ? invoice.balanceDue : invoice.total;
+    const canPay = !isPaid && !isCancelled && amountDue > 0;
+
     return (
         <div className="min-h-screen bg-[#f1f5f9] py-12 px-4 print:p-0 print:bg-white flex flex-col items-center">
 
@@ -35,9 +41,36 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                     Return to Site
                 </Link>
                 <div className="flex gap-4">
+                    {canPay && <PayNowButton invoiceId={invoice.id} amount={amountDue} />}
                     <PrintButton invoiceNumber={invoice.invoiceNumber} clientName={invoice.clientName} />
                 </div>
             </div>
+
+            {/* Payment status banner */}
+            {isPaid && (
+                <div className="max-w-[800px] w-full mb-6 print:hidden bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-4 flex items-center gap-3">
+                    <span className="material-symbols-outlined text-emerald-600 text-2xl">check_circle</span>
+                    <div>
+                        <p className="font-bold text-emerald-800 text-sm">Payment received — thank you!</p>
+                        <p className="text-emerald-700 text-xs mt-0.5">This invoice has been paid in full. No further action is required.</p>
+                    </div>
+                </div>
+            )}
+            {isCancelled && (
+                <div className="max-w-[800px] w-full mb-6 print:hidden bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 flex items-center gap-3">
+                    <span className="material-symbols-outlined text-slate-400 text-2xl">cancel</span>
+                    <p className="font-bold text-slate-500 text-sm">This invoice has been {invoice.status.toLowerCase()}.</p>
+                </div>
+            )}
+            {canPay && invoice.dueDate && new Date(invoice.dueDate) < new Date() && (
+                <div className="max-w-[800px] w-full mb-6 print:hidden bg-rose-50 border border-rose-200 rounded-xl px-5 py-4 flex items-center gap-3">
+                    <span className="material-symbols-outlined text-rose-500 text-2xl">warning</span>
+                    <div>
+                        <p className="font-bold text-rose-800 text-sm">Payment overdue</p>
+                        <p className="text-rose-700 text-xs mt-0.5">This invoice was due on {new Date(invoice.dueDate).toLocaleDateString("en-GB")}. Please pay as soon as possible.</p>
+                    </div>
+                </div>
+            )}
 
             {/* A4 Document Area */}
             <div id="invoice-document" className="bg-white w-full max-w-[800px] shadow-lg print:shadow-none min-h-[1131px] print:min-h-0 print:max-h-[296mm] mx-auto p-12 md:p-16 print:p-[12mm] relative flex flex-col rounded-sm print:rounded-none print:overflow-hidden">

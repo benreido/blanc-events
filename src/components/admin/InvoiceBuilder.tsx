@@ -503,6 +503,47 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
                         </h2>
                         <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={4} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-[#1F5C4B]" placeholder="Terms, payment transfer details, or thank you messages..."></textarea>
                     </div>
+
+                    {/* Recurring contract shortcut */}
+                    {initialData?.id && !initialData?.contractId && (
+                        <div className="bg-amber-50 border border-amber-200 p-5 rounded-2xl">
+                            <div className="flex items-start gap-3">
+                                <span className="material-symbols-outlined text-amber-500 text-xl mt-0.5">autorenew</span>
+                                <div>
+                                    <p className="text-sm font-bold text-amber-900">Set up as recurring contract?</p>
+                                    <p className="text-xs text-amber-700 mt-0.5">If this is a monthly hire, convert it to a yearly contract with automatic invoice generation.</p>
+                                    <a
+                                        href={`/admin/contracts/new?fromInvoice=${initialData.id}`}
+                                        className="inline-flex items-center gap-1.5 mt-3 px-4 py-2 bg-amber-500 text-white text-xs font-bold rounded-lg hover:bg-amber-600 transition-colors"
+                                    >
+                                        <span className="material-symbols-outlined text-sm">add</span>
+                                        Create Recurring Contract
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Already linked to a contract */}
+                    {initialData?.contractId && (
+                        <div className="bg-emerald-50 border border-emerald-200 p-5 rounded-2xl">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-emerald-600 text-xl">autorenew</span>
+                                    <div>
+                                        <p className="text-sm font-bold text-emerald-900">Part of a recurring contract</p>
+                                        <p className="text-xs text-emerald-700 mt-0.5">This invoice was auto-generated.</p>
+                                    </div>
+                                </div>
+                                <a
+                                    href={`/admin/contracts/${initialData.contractId}`}
+                                    className="text-xs font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1 transition-colors"
+                                >
+                                    View Contract <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Right Col - Totals Panel */}

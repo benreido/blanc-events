@@ -3,6 +3,14 @@
         {
             "path": "/api/cron/expire-holds",
             "schedule": "*/5 * * * *"
+        },
+        {
+            "path": "/api/cron/payment-reminders",
+            "schedule": "0 8 * * *"
+        },
+        {
+            "path": "/api/cron/generate-contract-invoices",
+            "schedule": "0 7 * * *"
         }
     ]
 }

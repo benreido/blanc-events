@@ -121,5 +121,49 @@ export async function PUT(req: NextRequest) {
         return NextResponse.json({ quote });
     }
 
+    if (action === "convert_to_invoice") {
+        const quote = await prisma.quoteRequest.findUnique({
+            where: { id },
+            include: { lineItems: true, serviceAddons: true },
+        });
+        if (!quote) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+        const invoiceNumber = `INV-${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${Math.floor(1000 + Math.random() * 9000)}`;
+        const dueDate = new Date(quote.startDate);
+        dueDate.setDate(dueDate.getDate() - 7); // Due 7 days before event
+
+        const invoice = await prisma.invoice.create({
+            data: {
+                invoiceNumber,
+                status: "DRAFT",
+                clientName: quote.customerName,
+                clientEmail: quote.customerEmail,
+                clientAddress: [quote.company, quote.venue].filter(Boolean).join("\n"),
+                subtotal: quote.subtotal,
+                vatAmount: quote.vatAmount,
+                total: quote.total,
+                balanceDue: quote.total,
+                depositAmount: quote.total * 0.25,
+                dueDate,
+                eventDate: quote.startDate,
+                notes: `Quote converted to invoice.\nEvent dates: ${quote.startDate.toLocaleDateString("en-GB")} – ${quote.endDate.toLocaleDateString("en-GB")} (${quote.numberOfDays} days)\nVenue: ${quote.venue || "TBC"}`,
+                items: {
+                    create: quote.lineItems.map((li, idx) => ({
+                        name: li.itemName,
+                        description: `${li.quantity} × ${quote.numberOfDays} day${quote.numberOfDays !== 1 ? "s" : ""}`,
+                        quantity: li.quantity,
+                        unitPrice: li.dayRate * quote.numberOfDays,
+                        discount: 0,
+                        discountType: "FIXED",
+                        taxable: true,
+                        sortOrder: idx,
+                    })),
+                },
+            },
+        });
+
+        return NextResponse.json({ success: true, invoiceId: invoice.id });
+    }
+
     return NextResponse.json({ error: "Unknown action" }, { status: 400 });
 }

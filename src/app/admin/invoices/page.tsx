@@ -217,6 +217,76 @@ function DeleteModal({ invoice, onClose, onDone }: { invoice: Invoice; onClose: 
     );
 }
 
+// ─── Schedule Modal ───────────────────────────────────────────────────────────
+function ScheduleModal({ invoice, onClose, onDone }: { invoice: Invoice; onClose: () => void; onDone: () => void }) {
+    const [occurrences, setOccurrences] = useState(11);
+    const [scheduling, setScheduling] = useState(false);
+
+    async function handleSchedule() {
+        if (occurrences < 1 || occurrences > 36) return alert("Occurrences must be between 1 and 36");
+        setScheduling(true);
+        
+        try {
+            const res = await fetch(`/api/admin/invoices/${invoice.id}/schedule`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ occurrences })
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error);
+
+            alert(`Successfully generated ${data.count} draft invoices.`);
+            onDone();
+            onClose();
+        } catch (e: any) {
+            alert(e.message || "Failed to schedule invoices");
+        } finally {
+            setScheduling(false);
+        }
+    }
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+                <h3 className="text-lg font-black tracking-tight mb-2">Setup Recurring Contract</h3>
+                <p className="text-sm text-slate-500 mb-6">
+                    Generate future draft invoices based on <span className="font-semibold text-slate-700">{invoice.invoiceNumber}</span>. 
+                    They will advance by 1 month for each occurrence.
+                </p>
+                
+                <div className="mb-6">
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">
+                        Occurrences to generate
+                    </label>
+                    <input
+                        type="number"
+                        min="1"
+                        max="36"
+                        value={occurrences}
+                        onChange={e => setOccurrences(parseInt(e.target.value) || 0)}
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1F5C4B]"
+                    />
+                    <p className="text-xs text-slate-400 mt-2">
+                        If this is a 12-month contract, enter 11 (as the current invoice counts as month 1).
+                    </p>
+                </div>
+
+                <div className="flex gap-3">
+                    <button onClick={onClose} className="flex-1 px-4 py-2.5 border border-slate-200 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancel</button>
+                    <button
+                        onClick={handleSchedule}
+                        disabled={scheduling}
+                        className="flex-1 px-4 py-2.5 bg-[#1F5C4B] hover:bg-[#123A2F] text-white rounded-lg text-sm font-bold transition-colors"
+                    >
+                        {scheduling ? "Generating…" : "Generate Drafts"}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function AdminInvoicesPage() {
     const router = useRouter();
@@ -230,6 +300,7 @@ export default function AdminInvoicesPage() {
     const [sendTarget, setSendTarget] = useState<Invoice | null>(null);
     const [payTarget, setPayTarget] = useState<Invoice | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<Invoice | null>(null);
+    const [scheduleTarget, setScheduleTarget] = useState<Invoice | null>(null);
     const [duplicating, setDuplicating] = useState<string | null>(null);
 
     const fetchInvoices = useCallback(async () => {
@@ -444,6 +515,15 @@ export default function AdminInvoicesPage() {
                                                     <span className="material-symbols-outlined text-[18px]">edit</span>
                                                 </Link>
 
+                                                {/* Schedule Recurring */}
+                                                <button
+                                                    onClick={() => setScheduleTarget(invoice)}
+                                                    title="Setup Recurring"
+                                                    className="p-2 rounded-lg text-slate-400 hover:text-purple-600 hover:bg-purple-50 transition-colors"
+                                                >
+                                                    <span className="material-symbols-outlined text-[18px]">event_repeat</span>
+                                                </button>
+
                                                 {/* View */}
                                                 <Link
                                                     href={`/invoice/${invoice.id}`}
@@ -481,6 +561,9 @@ export default function AdminInvoicesPage() {
             )}
             {deleteTarget && (
                 <DeleteModal invoice={deleteTarget} onClose={() => setDeleteTarget(null)} onDone={refresh} />
+            )}
+            {scheduleTarget && (
+                <ScheduleModal invoice={scheduleTarget} onClose={() => setScheduleTarget(null)} onDone={refresh} />
             )}
         </div>
     );
