@@ -20,6 +20,7 @@ export default function Navbar() {
 
                 <div className="hidden md:flex items-center gap-10">
                     {[
+                        { href: "/weddings", label: "Weddings" },
                         { href: "/services", label: "Services" },
                         { href: "/hire", label: "Equipment hire" },
                         { href: "/packages", label: "Packages" },
@@ -63,6 +64,7 @@ export default function Navbar() {
             {mobileOpen && (
                 <div className="md:hidden bg-white border-t border-slate-100 px-6 py-4 space-y-3">
                     {[
+                        { href: "/weddings", label: "Weddings" },
                         { href: "/services", label: "Services" },
                         { href: "/hire", label: "Equipment hire" },
                         { href: "/packages", label: "Packages" },

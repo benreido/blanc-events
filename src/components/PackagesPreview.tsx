@@ -128,11 +128,11 @@ export default function PackagesPreview() {
                         >
                             {/* Image or gradient header */}
                             {pkg.images && pkg.images[0] ? (
-                                <div className="h-48 overflow-hidden relative">
+                                <div className="h-48 overflow-hidden relative bg-slate-50">
                                     <img
                                         src={pkg.images[0]}
                                         alt={pkg.name}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                        className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-700"
                                         loading="lazy"
                                     />
                                 </div>
@@ -167,7 +167,7 @@ export default function PackagesPreview() {
                                 )}
 
                                 <MotionLink
-                                    href={pkg.id.startsWith("ph") ? "/packages" : `/book?packageId=${pkg.id}`}
+                                    href={pkg.id.startsWith("ph") ? "/packages" : pkg.contactForPrice ? `/contact?service=${encodeURIComponent(pkg.name)}` : `/book?packageId=${pkg.id}`}
                                     className="inline-flex items-center justify-center w-full py-3 rounded-xl bg-slate-50 text-[#123A2F] border border-slate-200 font-semibold tracking-tight text-xs transition-all hover:bg-slate-100"
                                 >
                                     View package

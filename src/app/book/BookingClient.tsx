@@ -45,6 +45,12 @@ export default function BookingClient() {
                 setPackages(data.packages || []);
                 setDjServices(data.djServices || []);
                 setAddons(data.addons || []);
+                // Quote-only packages can't go through checkout — send those
+                // enquiries to the contact form instead of a £0 Stripe session.
+                const initial = (data.packages || []).find((p: any) => p.id === initialPackage);
+                if (initial?.contactForPrice) {
+                    router.replace(`/contact?service=${encodeURIComponent(initial.name)}`);
+                }
             })
             .catch(console.error)
             .finally(() => setLoading(false));
@@ -266,7 +272,7 @@ export default function BookingClient() {
                                         <p className="font-bold text-slate-900">Custom Build / None</p>
                                         <p className="text-xs text-slate-500 mt-1">Select individual services below.</p>
                                     </div>
-                                    {packages.map(p => (
+                                    {packages.filter(p => !p.contactForPrice).map(p => (
                                         <div
                                             key={p.id}
                                             onClick={() => handleChange("selectedPackageId", p.id)}
@@ -277,6 +283,15 @@ export default function BookingClient() {
                                             {p.dayRate && <span className="absolute top-4 right-4 font-bold text-[#1F5C4B]">{formatCurrency(p.dayRate)}/d</span>}
                                         </div>
                                     ))}
+                                    {packages.some(p => p.contactForPrice) && (
+                                        <a
+                                            href={`/contact?service=${encodeURIComponent(packages.find(p => p.contactForPrice)?.name || "Premium Package")}`}
+                                            className="p-4 border border-dashed rounded-xl cursor-pointer transition-all flex flex-col justify-center border-slate-200 hover:border-[#1F5C4B]"
+                                        >
+                                            <p className="font-bold text-slate-900 pr-16">{packages.find(p => p.contactForPrice)?.name}</p>
+                                            <p className="text-xs text-slate-500 mt-1">Quoted individually — request a tailored quote →</p>
+                                        </a>
+                                    )}
                                 </div>
                             </div>
 

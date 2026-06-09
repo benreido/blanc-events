@@ -8,6 +8,15 @@ export async function POST(req: Request) {
         const { date, days, startTime, endTime, setupRequired, eventType, venueAddress, specialRequests,
             fullName, email, phone, billingAddress, companyName, selectedPackageId, selectedDJId, selectedAddons, subtotal, vat, total } = body;
 
+        // Quote-only packages (contactForPrice) have no dayRate, so a booking can
+        // arrive with a £0 total — Stripe can't checkout a zero amount.
+        if (!total || total <= 0) {
+            return NextResponse.json(
+                { error: "This package is quoted individually. Please use the contact form and we'll send you a tailored quote within 24 hours." },
+                { status: 400 }
+            );
+        }
+
         // Parse dates
         const startDate = new Date(date);
         const endDate = new Date(date);
