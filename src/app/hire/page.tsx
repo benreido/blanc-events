@@ -5,6 +5,7 @@ import { useCart } from "@/lib/cart-context";
 import { formatCurrency, calculateDays } from "@/lib/config";
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Equipment {
     id: string; name: string; slug: string; category: string; brand: string;
@@ -87,6 +88,7 @@ export default function BlancEventsHirePage() {
         <>
             <Navbar />
             <main className="max-w-[1440px] mx-auto flex gap-8 px-4 sm:px-6 lg:px-8 py-8 pt-24">
+                <h1 className="sr-only">Equipment hire — lighting, DJ and audio in Manchester</h1>
                 {/* Sidebar Filters */}
                 <aside className="w-64 shrink-0 hidden md:block">
                     <div className="sticky top-24 flex flex-col gap-8">
@@ -198,7 +200,7 @@ export default function BlancEventsHirePage() {
                                     <div key={item.id} className="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:border-[#1F5C4B]/50 transition-all hover:shadow-xl shadow-sm">
                                         <div className="relative aspect-[4/3] bg-slate-50 overflow-hidden">
                                             {item.images[0] ? (
-                                                <img alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src={item.images[0]} />
+                                                <Image alt={item.name} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover group-hover:scale-105 transition-transform duration-500" src={item.images[0]} />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center"><span className="material-symbols-outlined text-4xl text-slate-300">speaker</span></div>
                                             )}

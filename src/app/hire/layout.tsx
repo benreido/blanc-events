@@ -16,12 +16,12 @@ export const metadata: Metadata = {
         "dry hire Manchester",
         "backline hire Manchester",
     ],
-    alternates: { canonical: "https://blanc-events.co.uk/hire" },
+    alternates: { canonical: "https://www.blanc-events.co.uk/hire" },
     openGraph: {
         title: "Equipment Hire Manchester — Lighting, DJ & Audio | Blanc. Events",
         description:
             "Hire lighting, DJ equipment, and audio in Manchester. Astera Titan Tubes, Pioneer CDJ-3000, DJM-A9, XDJ-AZ, PA systems and more. Delivery across Greater Manchester.",
-        url: "https://blanc-events.co.uk/hire",
+        url: "https://www.blanc-events.co.uk/hire",
     },
 };
 

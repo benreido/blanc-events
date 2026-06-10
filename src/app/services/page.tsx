@@ -8,12 +8,12 @@ export const metadata = {
     title: "Event Production Services",
     description:
         "Boutique lighting and event production services in Manchester. Lighting design, technical management, DJ talent, delivery and setup across Greater Manchester and the North West.",
-    alternates: { canonical: "https://blanc-events.co.uk/services" },
+    alternates: { canonical: "https://www.blanc-events.co.uk/services" },
     openGraph: {
         title: "Event Production Services | Blanc. Events Manchester",
         description:
             "Boutique lighting and event production services — lighting design, technical management, DJ talent, delivery and setup across Greater Manchester.",
-        url: "https://blanc-events.co.uk/services",
+        url: "https://www.blanc-events.co.uk/services",
     },
 };
 

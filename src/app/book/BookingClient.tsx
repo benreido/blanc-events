@@ -87,8 +87,10 @@ export default function BookingClient() {
     const total = subtotal + vat;
 
     const [submitting, setSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState("");
     const handleSubmit = async () => {
         setSubmitting(true);
+        setSubmitError("");
         try {
             const res = await fetch("/api/book", {
                 method: "POST",
@@ -105,11 +107,11 @@ export default function BookingClient() {
                 }
             } else {
                 const err = await res.json();
-                alert(err.error || "Booking failed.");
+                setSubmitError(err.error || "Something went wrong confirming your booking. Please try again, or call us on 07584 192 578.");
             }
         } catch (e) {
             console.error(e);
-            alert("An error occurred during booking.");
+            setSubmitError("Something went wrong confirming your booking. Please try again, or call us on 07584 192 578.");
         }
         setSubmitting(false);
     };
@@ -143,8 +145,8 @@ export default function BookingClient() {
                 {[
                     { num: 1, label: "Date" },
                     { num: 2, label: "Event" },
-                    { num: 3, label: "Details" },
-                    { num: 4, label: "Services" },
+                    { num: 3, label: "Services" },
+                    { num: 4, label: "Details" },
                     { num: 5, label: "Review" }
                 ].map(s => (
                     <div key={s.num} className="flex flex-col items-center gap-2">
@@ -155,6 +157,36 @@ export default function BookingClient() {
                     </div>
                 ))}
             </div>
+
+            {/* Running order summary — keeps what's being booked and the price visible on every step */}
+            {(formData.date || selectedPkg || selectedDJ) && (
+                <div className="mb-6 px-6 py-4 bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+                    {formData.date && (
+                        <span className="flex items-center gap-2 text-slate-600">
+                            <span className="material-symbols-outlined text-[18px] text-[#1F5C4B]">event</span>
+                            {new Date(formData.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                            {formData.days > 1 && <span className="text-slate-400">· {formData.days} days</span>}
+                        </span>
+                    )}
+                    {selectedPkg && (
+                        <span className="flex items-center gap-2 text-slate-600">
+                            <span className="material-symbols-outlined text-[18px] text-[#1F5C4B]">package_2</span>
+                            {selectedPkg.name}
+                        </span>
+                    )}
+                    {selectedDJ && (
+                        <span className="flex items-center gap-2 text-slate-600">
+                            <span className="material-symbols-outlined text-[18px] text-[#1F5C4B]">headphones</span>
+                            {selectedDJ.name}
+                        </span>
+                    )}
+                    {total > 0 && (
+                        <span className="ml-auto font-bold text-[#123A2F]">
+                            {formatCurrency(total)} <span className="font-normal text-slate-400 text-xs">inc. VAT</span>
+                        </span>
+                    )}
+                </div>
+            )}
 
             <div className="bg-white p-8 md:p-12 border shadow-sm rounded-3xl border-slate-200">
                 <form onSubmit={step < 5 ? handleNext : (e) => { e.preventDefault(); handleSubmit(); }}>
@@ -223,8 +255,8 @@ export default function BookingClient() {
                         </div>
                     )}
 
-                    {/* STEP 3: CUSTOMER INFO */}
-                    {step === 3 && (
+                    {/* STEP 4: CUSTOMER INFO */}
+                    {step === 4 && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
                             <h2 className="text-3xl font-black mb-8">Your Details</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -257,8 +289,8 @@ export default function BookingClient() {
                         </div>
                     )}
 
-                    {/* STEP 4: PACKAGE & DJ SELECTION */}
-                    {step === 4 && (
+                    {/* STEP 3: PACKAGE & DJ SELECTION — price is visible before we ask for personal details */}
+                    {step === 3 && (
                         <div className="space-y-8 animate-in fade-in slide-in-from-right-4">
                             <h2 className="text-3xl font-black mb-4">Packages & Services</h2>
 
@@ -434,22 +466,14 @@ export default function BookingClient() {
                                 </div>
                             </div>
 
-                            <p className="text-xs text-slate-400 text-center">By confirming, you agree to our standard terms of service. An automatic PDF invoice will be generated and emailed to you following confirmation.</p>
+                            <p className="text-xs text-slate-400 text-center">By confirming, you agree to our <a href="/terms" target="_blank" className="underline hover:text-[#1F5C4B]">Terms of Hire</a>. An automatic PDF invoice will be generated and emailed to you following confirmation.</p>
                         </div>
                     )}
 
-                    {/* Social Proof for Step 5 */}
-                    {step === 5 && (
-                        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 bg-[#F9F7F5] p-5 rounded-2xl border border-slate-200/60 shadow-inner">
-                            <div className="flex -space-x-3">
-                                <img src="https://i.pravatar.cc/100?img=33" className="w-10 h-10 rounded-full border-2 border-white shadow-sm" alt="Planner" />
-                                <img src="https://i.pravatar.cc/100?img=47" className="w-10 h-10 rounded-full border-2 border-white shadow-sm" alt="Producer" />
-                                <img src="https://i.pravatar.cc/100?img=12" className="w-10 h-10 rounded-full border-2 border-white shadow-sm" alt="Director" />
-                            </div>
-                            <div className="text-xs text-slate-600 font-medium text-center sm:text-left">
-                                <span className="text-[#1F5C4B] font-bold flex items-center justify-center sm:justify-start gap-1"><span className="material-symbols-outlined text-[14px] text-yellow-500 drop-shadow-sm">star</span> 5.0 Average Verification</span>
-                                Trusted by premier event planners across the UK.
-                            </div>
+
+                    {submitError && (
+                        <div className="mt-8 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm" role="alert">
+                            {submitError}
                         </div>
                     )}
 

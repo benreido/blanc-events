@@ -3,7 +3,7 @@ import "./globals.css";
 import { CartProvider } from "@/lib/cart-context";
 import { GeistSans } from "geist/font/sans";
 
-const BASE_URL = "https://blanc-events.co.uk";
+const BASE_URL = "https://www.blanc-events.co.uk";
 
 export const metadata: Metadata = {
     metadataBase: new URL(BASE_URL),
@@ -67,9 +67,8 @@ export const metadata: Metadata = {
             "Manchester's specialist lighting production studio. DMX-controlled lighting environments, Astera wireless fixtures, and full event production.",
         images: ["/og-image.jpg"],
     },
-    alternates: {
-        canonical: BASE_URL,
-    },
+    // No site-wide canonical: it would mark every page without its own
+    // canonical (e.g. /book) as a copy of the homepage. Pages set their own.
 };
 
 const organizationSchema = {

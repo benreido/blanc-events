@@ -7,12 +7,12 @@ export const metadata = {
     title: "Wedding DJ & Special Effects Manchester | Blanc. Events",
     description:
         "Wedding DJ, dry ice floor clouds, cold spark machines and wireless Astera lighting across Greater Manchester and the North West. Create a first dance moment you'll never forget.",
-    alternates: { canonical: "https://blanc-events.co.uk/weddings" },
+    alternates: { canonical: "https://www.blanc-events.co.uk/weddings" },
     openGraph: {
         title: "Wedding DJ & Special Effects | Blanc. Events Manchester",
         description:
             "Wedding DJ, dry ice floor clouds, cold spark machines and wireless lighting for weddings across Greater Manchester and the North West.",
-        url: "https://blanc-events.co.uk/weddings",
+        url: "https://www.blanc-events.co.uk/weddings",
     },
 };
 

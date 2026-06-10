@@ -10,10 +10,15 @@ import PackagesPreview from "@/components/PackagesPreview";
 import ProductionHireSection from "@/components/ProductionHireSection";
 import EventEnquiryForm from "@/components/EventEnquiryForm";
 import { CheckCircle2 } from "lucide-react";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
-const BASE_URL = "https://blanc-events.co.uk";
+const BASE_URL = "https://www.blanc-events.co.uk";
+
+export const metadata = {
+    alternates: { canonical: BASE_URL },
+};
 
 const homePageSchema = {
     "@context": "https://schema.org",
@@ -133,10 +138,12 @@ export default async function HomePage() {
                                     <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#123A2F]">Music Video</span>
                                 </div>
 
-                                <img
+                                <Image
                                     src="/images/Titan tube.png"
                                     alt="Astera Titan Tubes Collection"
-                                    className="max-h-[90%] w-auto object-contain transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                                    width={500}
+                                    height={500}
+                                    className="max-h-[90%] w-auto h-auto object-contain transform group-hover:scale-105 transition-transform duration-700 ease-out"
                                 />
                             </div>
                         </div>

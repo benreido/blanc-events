@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import MotionLink from "@/components/MotionLink";
 import { formatCurrency } from "@/lib/config";
+import Image from "next/image";
 import { Package, CheckCircle2, ArrowRight } from "lucide-react";
 
 interface PackageData {
@@ -129,11 +130,12 @@ export default function PackagesPreview() {
                             {/* Image or gradient header */}
                             {pkg.images && pkg.images[0] ? (
                                 <div className="h-48 overflow-hidden relative bg-slate-50">
-                                    <img
+                                    <Image
                                         src={pkg.images[0]}
                                         alt={pkg.name}
-                                        className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-700"
-                                        loading="lazy"
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, 33vw"
+                                        className="object-contain p-4 group-hover:scale-105 transition-transform duration-700"
                                     />
                                 </div>
                             ) : (

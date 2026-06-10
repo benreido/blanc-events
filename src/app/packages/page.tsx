@@ -3,17 +3,18 @@ import Footer from "@/components/Footer";
 import { prisma } from "@/lib/prisma";
 import { formatCurrency } from "@/lib/config";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata = {
     title: "Production Packages",
     description:
         "Pre-configured lighting and AV production packages for events in Manchester. Comprehensive setups including lighting design, audio, and technical support. Contact us for a tailored quote.",
-    alternates: { canonical: "https://blanc-events.co.uk/packages" },
+    alternates: { canonical: "https://www.blanc-events.co.uk/packages" },
     openGraph: {
         title: "Production Packages | Blanc. Events Manchester",
         description:
             "Pre-configured lighting and AV production packages for events in Manchester. Lighting design, audio, and technical support included.",
-        url: "https://blanc-events.co.uk/packages",
+        url: "https://www.blanc-events.co.uk/packages",
     },
 };
 
@@ -67,7 +68,7 @@ export default async function PackagesPage() {
                                     <div key={pkg.id} className="group border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all">
                                         <div className="relative h-72 bg-slate-50 overflow-hidden">
                                             {pkg.images[0] ? (
-                                                <img src={pkg.images[0]} alt={pkg.name} className="w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-700" />
+                                                <Image src={pkg.images[0]} alt={pkg.name} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-contain p-6 group-hover:scale-105 transition-transform duration-700" />
                                             ) : (
                                                 <div className="w-full h-full bg-gradient-to-br from-[#123A2F] to-[#0B241D] flex items-center justify-center">
                                                     <span className="material-symbols-outlined text-white/30 text-6xl">package_2</span>

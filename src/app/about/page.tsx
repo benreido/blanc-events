@@ -6,12 +6,12 @@ export const metadata = {
     title: "About Us",
     description:
         "Learn about Blanc. Events — Manchester's specialist lighting production studio. Founded on a passion for flawless event production, we serve the North West's most ambitious venues and agencies.",
-    alternates: { canonical: "https://blanc-events.co.uk/about" },
+    alternates: { canonical: "https://www.blanc-events.co.uk/about" },
     openGraph: {
         title: "About Blanc. Events | Lighting Production Manchester",
         description:
             "Manchester-born lighting production specialists with expertise in Astera fixtures, DMX-controlled environments, and full event production across the North West.",
-        url: "https://blanc-events.co.uk/about",
+        url: "https://www.blanc-events.co.uk/about",
     },
 };
 

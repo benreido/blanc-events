@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { STAGGER_CONTAINER, FADE_UP } from "./AnimatedSection";
 import MotionLink from "./MotionLink";
+import Image from "next/image";
 
 export default function HeroSection() {
     const scrollToEnquiry = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -107,7 +108,7 @@ export default function HeroSection() {
                                                 className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex flex-col items-center justify-center shrink-0 w-full aspect-square relative group"
                                             >
                                                 <div className="w-full h-full flex items-center justify-center">
-                                                    <img src={item.img} alt={item.name} className="max-h-[80%] max-w-[80%] object-contain group-hover:scale-110 transition-transform duration-700 ease-out" />
+                                                    <Image src={item.img} alt={item.name} width={400} height={400} className="max-h-[80%] max-w-[80%] w-auto h-auto object-contain group-hover:scale-110 transition-transform duration-700 ease-out" />
                                                 </div>
                                             </motion.div>
                                         ))}
@@ -133,7 +134,7 @@ export default function HeroSection() {
                                                 className="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 flex flex-col items-center justify-center shrink-0 w-full aspect-square relative group"
                                             >
                                                 <div className="w-full h-full flex items-center justify-center">
-                                                    <img src={item.img} alt={item.name} className="max-h-[80%] max-w-[80%] object-contain group-hover:scale-110 transition-transform duration-700 ease-out" />
+                                                    <Image src={item.img} alt={item.name} width={400} height={400} className="max-h-[80%] max-w-[80%] w-auto h-auto object-contain group-hover:scale-110 transition-transform duration-700 ease-out" />
                                                 </div>
                                             </motion.div>
                                         ))}
@@ -156,7 +157,7 @@ export default function HeroSection() {
                                     { img: "/images/xdj az.webp", name: "XDJ-AZ" },
                                 ].map((item, idx) => (
                                     <div key={`m1-${loopIdx}-${idx}`} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 shrink-0 w-64 h-64 flex items-center justify-center group relative">
-                                        <img src={item.img} alt={item.name} className="max-h-[80%] max-w-[80%] object-contain" />
+                                        <Image src={item.img} alt={item.name} width={300} height={300} className="max-h-[80%] max-w-[80%] w-auto h-auto object-contain" />
                                     </div>
                                 ))}
                             </div>

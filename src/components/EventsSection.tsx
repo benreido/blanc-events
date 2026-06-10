@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 const events = [
     {
@@ -91,11 +92,12 @@ export default function EventsSection() {
                         className="w-full lg:w-[380px] shrink-0"
                     >
                         <div className="rounded-3xl overflow-hidden aspect-[3/4] relative">
-                            <img
+                            <Image
                                 src={events[0].image}
                                 alt={events[0].title}
-                                className="w-full h-full object-cover"
-                                loading="lazy"
+                                fill
+                                sizes="(max-width: 1024px) 100vw, 380px"
+                                className="object-cover"
                             />
                             <div className="absolute inset-0 bg-[#123A2F]/10"></div>
                         </div>

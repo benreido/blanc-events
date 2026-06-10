@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import MotionLink from "@/components/MotionLink";
+import Image from "next/image";
 
 /**
  * Premium "Two Ways to Work with Blanc" Section
@@ -78,10 +79,12 @@ export default function TwoWaysSection() {
                     >
                         <div className="h-64 sm:h-80 w-full overflow-hidden relative">
                             <div className="absolute inset-0 bg-[#123A2F]/10 group-hover:bg-transparent transition-colors z-10 duration-500"></div>
-                            <img
+                            <Image
                                 src="/images/twoways-production.jpg"
                                 alt="Dry Hire Warehouse"
-                                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                className="object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                             />
                             <div className="absolute top-6 left-6 z-20 bg-white/90 backdrop-blur px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-brand-sm">
                                 <span className="material-symbols-outlined text-[#1F5C4B] text-sm">inventory_2</span>
@@ -119,10 +122,12 @@ export default function TwoWaysSection() {
                     >
                         <div className="h-64 sm:h-80 w-full overflow-hidden relative">
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10 duration-500"></div>
-                            <img
+                            <Image
                                 src="/images/twoways-dryhire.jpg"
                                 alt="Intimate Boutique Event Production"
-                                className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                                fill
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                className="object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                             />
                             <div className="absolute top-6 left-6 z-20 bg-[#0B241D]/90 backdrop-blur border border-white/10 px-5 py-2.5 rounded-xl flex items-center gap-2 shadow-lg">
                                 <span className="material-symbols-outlined text-[#F97316] text-sm">stars</span>
