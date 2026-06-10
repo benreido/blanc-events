@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import MotionLink from "@/components/MotionLink";
 import { Lightbulb, Music2, Speaker, Wrench, ArrowRight } from "lucide-react";
 
-const categories = [
+const categories: { title: string; description: string; icon: typeof Lightbulb; href: string; cta?: string }[] = [
     {
         title: "Lighting hire",
         description: "Astera Titan Tubes, AX1s, wireless uplighting and moving heads.",
@@ -15,19 +15,21 @@ const categories = [
         title: "DJ equipment",
         description: "Pioneer CDJ-3000s, DJM-A9, AlphaTheta XDJ-AZ and more.",
         icon: Music2,
-        href: "/hire?category=DJ+Equipment",
+        href: `/hire?category=${encodeURIComponent("DJ & Playback")}`,
     },
     {
         title: "Audio systems",
-        description: "Professional PA systems, monitors, subwoofers and microphones.",
+        description: "PA systems, monitors and subwoofers — specced and quoted per event.",
         icon: Speaker,
-        href: "/hire?category=Audio",
+        href: "/contact?service=Audio%20Systems",
+        cta: "Enquire",
     },
     {
         title: "Technicians",
         description: "Experienced AV technicians for setup, operation and de-rig.",
         icon: Wrench,
         href: "/contact?service=Technician",
+        cta: "Enquire",
     },
 ];
 
@@ -88,7 +90,7 @@ export default function ProductionHireSection() {
                                 <h3 className="text-lg font-black text-slate-900 mb-2 tracking-tight">{cat.title}</h3>
                                 <p className="text-slate-500 text-sm leading-relaxed mb-5">{cat.description}</p>
                                 <span className="inline-flex items-center gap-1.5 text-[#1F5C4B] font-semibold text-sm tracking-tight">
-                                    Browse
+                                    {cat.cta ?? "Browse"}
                                     <ArrowRight size={14} strokeWidth={1.5} className="group-hover:translate-x-1 transition-transform duration-300" />
                                 </span>
                             </motion.a>

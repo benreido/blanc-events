@@ -29,8 +29,8 @@ export default function Footer() {
                         <h5 className="font-bold text-slate-900 uppercase tracking-widest text-xs mb-8">Services</h5>
                         <ul className="space-y-4">
                             <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/weddings">Weddings</Link></li>
+                            <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/corporate">Corporate Events</Link></li>
                             <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/services">Lighting Design</Link></li>
-                            <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/services">Event Production</Link></li>
                             <li><Link className="text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm" href="/contact">Get a proposal</Link></li>
                         </ul>
                     </div>

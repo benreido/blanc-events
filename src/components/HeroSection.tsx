@@ -55,6 +55,27 @@ export default function HeroSection() {
                             Browse equipment
                         </MotionLink>
                     </motion.div>
+
+                    {/* Audience doors */}
+                    <motion.div variants={FADE_UP} className="mt-10 w-full sm:w-auto">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 block mb-3">I&apos;m planning…</span>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            {[
+                                { label: "A wedding", href: "/weddings" },
+                                { label: "A corporate event", href: "/corporate" },
+                                { label: "Trade dry hire", href: "/hire" },
+                            ].map((door) => (
+                                <a
+                                    key={door.href}
+                                    href={door.href}
+                                    className="group flex items-center justify-between sm:justify-start gap-2 px-5 py-3 bg-white/70 border border-slate-200 rounded-full text-sm font-semibold text-slate-700 hover:border-[#1F5C4B] hover:text-[#1F5C4B] transition-colors"
+                                >
+                                    {door.label}
+                                    <span className="text-[#1F5C4B] group-hover:translate-x-0.5 transition-transform">→</span>
+                                </a>
+                            ))}
+                        </div>
+                    </motion.div>
                 </motion.div>
 
                 {/* Right Column: Sliding Grid */}

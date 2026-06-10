@@ -14,13 +14,13 @@ const events = [
         title: "Private parties",
         description: "Transform homes, gardens and venues into unforgettable parties.",
         image: "/images/events-private-parties.jpg",
-        href: "/services",
+        href: "/packages",
     },
     {
         title: "Corporate events",
         description: "Production, lighting and sound for brand activations, conferences and corporate celebrations.",
         image: "/images/events-corporate.jpg",
-        href: "/services",
+        href: "/corporate",
     },
 ];
 
