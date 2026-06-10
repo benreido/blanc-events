@@ -14,6 +14,7 @@ export default function EventEnquiryForm() {
 
     const [form, setForm] = useState({
         eventType: "",
+        eventDate: "",
         guestCount: "",
         location: "",
         budget: "",
@@ -41,6 +42,7 @@ export default function EventEnquiryForm() {
         // Map guided fields to the existing contact form schema
         const messageLines = [
             `Event Type: ${form.eventType}`,
+            form.eventDate ? `Event Date: ${form.eventDate}` : "",
             form.guestCount ? `Guest Count: ${form.guestCount}` : "",
             form.location ? `Location: ${form.location}` : "",
             form.budget ? `Budget: ${form.budget}` : "",
@@ -159,8 +161,18 @@ export default function EventEnquiryForm() {
                                 </select>
                             </div>
 
-                            {/* Guest Count + Location */}
+                            {/* Date + Guest Count */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                <div>
+                                    <label className={labelClasses}>Event Date</label>
+                                    <input
+                                        type="date"
+                                        name="eventDate"
+                                        value={form.eventDate}
+                                        onChange={handleChange}
+                                        className={inputClasses}
+                                    />
+                                </div>
                                 <div>
                                     <label className={labelClasses}>Guest Count</label>
                                     <input
@@ -173,17 +185,19 @@ export default function EventEnquiryForm() {
                                         min="1"
                                     />
                                 </div>
-                                <div>
-                                    <label className={labelClasses}>Event Location</label>
-                                    <input
-                                        type="text"
-                                        name="location"
-                                        value={form.location}
-                                        onChange={handleChange}
-                                        className={inputClasses}
-                                        placeholder="Venue or city"
-                                    />
-                                </div>
+                            </div>
+
+                            {/* Location */}
+                            <div>
+                                <label className={labelClasses}>Event Location</label>
+                                <input
+                                    type="text"
+                                    name="location"
+                                    value={form.location}
+                                    onChange={handleChange}
+                                    className={inputClasses}
+                                    placeholder="Venue or city"
+                                />
                             </div>
 
                             {/* Budget Range */}

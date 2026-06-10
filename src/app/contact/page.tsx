@@ -123,9 +123,9 @@ export default function ContactPage() {
                             </div>
                             <div className="space-y-8">
                                 {[
-                                    { icon: "location_on", title: "Visit Us", lines: ["19 Cheetham hill road", "M4 4FY"] },
-                                    { icon: "email", title: "Email", lines: ["hello@blanc-events.co.uk", "Response within 24 hours"] },
-                                    { icon: "call", title: "Call Us", lines: ["07584192578", "Mon–Fri 9am–6pm"] },
+                                    { icon: "location_on", title: "Visit Us", lines: [{ text: "19 Cheetham Hill Road" }, { text: "Manchester M4 4FY" }] },
+                                    { icon: "email", title: "Email", lines: [{ text: "hello@blanc-events.co.uk", href: "mailto:hello@blanc-events.co.uk" }, { text: "Response within 24 hours" }] },
+                                    { icon: "call", title: "Call Us", lines: [{ text: "07584 192 578", href: "tel:+447584192578" }, { text: "Mon–Fri 9am–6pm" }] },
                                 ].map((c) => (
                                     <div key={c.title} className="flex gap-4">
                                         <div className="w-12 h-12 bg-[#1F5C4B]/10 rounded-lg flex items-center justify-center shrink-0">
@@ -134,7 +134,11 @@ export default function ContactPage() {
                                         <div>
                                             <h4 className="font-bold mb-1">{c.title}</h4>
                                             {c.lines.map((l) => (
-                                                <p key={l} className="text-slate-400 text-sm">{l}</p>
+                                                "href" in l && l.href ? (
+                                                    <a key={l.text} href={l.href} className="block text-slate-600 hover:text-[#1F5C4B] transition-colors text-sm font-medium">{l.text}</a>
+                                                ) : (
+                                                    <p key={l.text} className="text-slate-400 text-sm">{l.text}</p>
+                                                )
                                             ))}
                                         </div>
                                     </div>

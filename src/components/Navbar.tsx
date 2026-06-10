@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCart } from "@/lib/cart-context";
 import { useState } from "react";
-import { ShoppingBag, X, Menu } from "lucide-react";
+import { ShoppingBag, X, Menu, Phone } from "lucide-react";
 
 export default function Navbar() {
     const { itemCount } = useCart();
@@ -37,6 +37,13 @@ export default function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-4">
+                    <a
+                        href="tel:+447584192578"
+                        aria-label="Call us on 07584 192 578"
+                        className="md:hidden p-2 text-slate-400 hover:text-[#1F5C4B] transition-colors"
+                    >
+                        <Phone size={20} strokeWidth={1.5} />
+                    </a>
                     <Link href="/hire" className="relative p-2 text-slate-400 hover:text-[#1F5C4B] transition-colors">
                         <ShoppingBag size={20} strokeWidth={1.5} />
                         {itemCount > 0 && (
@@ -80,6 +87,12 @@ export default function Navbar() {
                             {link.label}
                         </Link>
                     ))}
+                    <a
+                        href="tel:+447584192578"
+                        className="flex items-center gap-2 text-sm font-semibold tracking-tight py-3 mt-2 border-t border-slate-100 text-[#1F5C4B]"
+                    >
+                        <Phone size={16} strokeWidth={1.5} /> Call 07584 192 578
+                    </a>
                 </div>
             )}
         </header>
