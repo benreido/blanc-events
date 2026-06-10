@@ -7,19 +7,19 @@ const events = [
     {
         title: "Weddings",
         description: "Lighting and sound design for elegant celebrations.",
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB02DWxclk8JZizOOjzvEE2Pzi_qaBdYASuJ0gCvzKJjFcRChSVvs5puMyvbXoC2qm5PLFcTR1vb4YCVL5n-WQauwIEoajZJjhZgJI8PJYdaSYUepWVtNaQM2wYXbwjggtxux__SzEH9rDjFpl74qPlTRDG17TvCLkFM6k-FtSQrl26y270PdxDdmbVuJ8xQpw3xoubB9N9vW3CwuL7w2h0ImTlABQuKItFQmwDZxNU857O1hqwsmBYj_ebw89l_aU5wDDupcRhFysp",
+        image: "/images/events-weddings.jpg",
         href: "/weddings",
     },
     {
         title: "Private parties",
         description: "Transform homes, gardens and venues into unforgettable parties.",
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDgglQg9y0LTTLFBuq7T3wlEi88Vxi3F6w8BxW_gc9VZEVaEMAzXr0zwTIGI1Z9FbKEwTGtB6NjIsfngbAds67XlYQTM9L7ECvWYYuAoyK3Lyb9ek0jWxPUpaQzIHBwhSp8ZGkSMdy632dk3PXdZcIDiP69HyFjDpSpjmhGZTzXQpP78mzYjtCLvaR-1TYm75Bc4NfetLE7CLuDWw290VJ7fb6Tsiv3puv6vnYFdHB9C8x1zJBreMbejOsY3QKOBnhSvOZocNqkrwKJ",
+        image: "/images/events-private-parties.jpg",
         href: "/services",
     },
     {
         title: "Corporate events",
         description: "Production, lighting and sound for brand activations, conferences and corporate celebrations.",
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDxqVUFiSuTHi2cC86wZRXa2Yt-LDHCsEWAi6jIBvqKneSa1dmJTAy1mpDpU7HCdeYhBneOs5kwrryAA3K6ONvLYSc_VzoOJUfXQ0dYE0bJAcQRiXuibWtt6ZQMo75dCvKKsQJ6qqGS14AY6bTIdH1YZ69SNaPxv_ZE-wUX_ARNNUMlrtfUf_X1qBUYxrBmjHsbFYv6GMerokxIg0x5p0iX-Z-T0m9dZzFHpkOnYGCIqjtjHXKWEYfILOxRpZqa3LiczUh7TLc9PWhy",
+        image: "/images/events-corporate.jpg",
         href: "/services",
     },
 ];

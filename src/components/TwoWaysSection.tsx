@@ -79,7 +79,7 @@ export default function TwoWaysSection() {
                         <div className="h-64 sm:h-80 w-full overflow-hidden relative">
                             <div className="absolute inset-0 bg-[#123A2F]/10 group-hover:bg-transparent transition-colors z-10 duration-500"></div>
                             <img
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxqVUFiSuTHi2cC86wZRXa2Yt-LDHCsEWAi6jIBvqKneSa1dmJTAy1mpDpU7HCdeYhBneOs5kwrryAA3K6ONvLYSc_VzoOJUfXQ0dYE0bJAcQRiXuibWtt6ZQMo75dCvKKsQJ6qqGS14AY6bTIdH1YZ69SNaPxv_ZE-wUX_ARNNUMlrtfUf_X1qBUYxrBmjHsbFYv6GMerokxIg0x5p0iX-Z-T0m9dZzFHpkOnYGCIqjtjHXKWEYfILOxRpZqa3LiczUh7TLc9PWhy"
+                                src="/images/twoways-production.jpg"
                                 alt="Dry Hire Warehouse"
                                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                             />
@@ -120,7 +120,7 @@ export default function TwoWaysSection() {
                         <div className="h-64 sm:h-80 w-full overflow-hidden relative">
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10 duration-500"></div>
                             <img
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuB02DWxclk8JZizOOjzvEE2Pzi_qaBdYASuJ0gCvzKJjFcRChSVvs5puMyvbXoC2qm5PLFcTR1vb4YCVL5n-WQauwIEoajZJjhZgJI8PJYdaSYUepWVtNaQM2wYXbwjggtxux__SzEH9rDjFpl74qPlTRDG17TvCLkFM6k-FtSQrl26y270PdxDdmbVuJ8xQpw3xoubB9N9vW3CwuL7w2h0ImTlABQuKItFQmwDZxNU857O1hqwsmBYj_ebw89l_aU5wDDupcRhFysp"
+                                src="/images/twoways-dryhire.jpg"
                                 alt="Intimate Boutique Event Production"
                                 className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                             />

@@ -24,13 +24,11 @@ export default function Testimonials() {
         fetch("/api/testimonials")
             .then(r => r.json())
             .then(data => {
-                if (Array.isArray(data) && data.length > 0) {
+                if (Array.isArray(data)) {
                     setTestimonials(data);
-                } else {
-                    setTestimonials(defaultTestData);
                 }
             })
-            .catch(() => setTestimonials(defaultTestData))
+            .catch(() => setTestimonials([]))
             .finally(() => setLoading(false));
     }, []);
 
@@ -42,7 +40,8 @@ export default function Testimonials() {
         return () => clearInterval(interval);
     }, [testimonials]);
 
-    if (loading) return null;
+    // Render nothing until real testimonials exist — no placeholder reviews.
+    if (loading || testimonials.length === 0) return null;
 
     return (
         <section className="py-32 px-6 overflow-hidden bg-white">
@@ -138,36 +137,3 @@ export default function Testimonials() {
         </section>
     );
 }
-
-const defaultTestData: Testimonial[] = [
-    {
-        id: "d1",
-        name: "James Harrington",
-        role: "Event Director",
-        company: "Manchester Town Hall",
-        eventType: "Corporate Gala",
-        quote: "Blanc. handled the technical production for our annual gala flawlessly. The lighting design transformed the Great Hall into something truly world-class.",
-        rating: 5,
-        avatarUrl: null
-    },
-    {
-        id: "d2",
-        name: "Sophie Edwards",
-        role: "Head of Marketing",
-        company: "Victoria Warehouse",
-        eventType: "Product Launch",
-        quote: "The wireless Astera setup was game-changing for our launch event. Clean, fast setup and stunning results. Highly recommend the Blanc. team.",
-        rating: 5,
-        avatarUrl: null
-    },
-    {
-        id: "d3",
-        name: "Mark Sanderson",
-        role: "Wedding Client",
-        company: null,
-        eventType: "Wedding",
-        quote: "From the initial quote to the event night, the service was impeccable. The sound quality and atmosphere for our wedding were exactly what we dreamed of.",
-        rating: 5,
-        avatarUrl: null
-    }
-];

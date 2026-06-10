@@ -47,7 +47,9 @@ const EFFECTS = [
 
 export default async function WeddingsPage() {
     const testimonials = await prisma.testimonial.findMany({
-        where: { isActive: true, eventType: { in: ["Wedding", "wedding"] } },
+        // notIn excludes the demo rows from prisma/seed.ts — they must never
+        // appear here, where reviews are labelled "Verified on Tripadvisor".
+        where: { isActive: true, eventType: { in: ["Wedding", "wedding"] }, id: { notIn: ["t-james", "t-sophie", "t-mark", "t-laura"] } },
         orderBy: { sortOrder: "asc" },
         select: { id: true, name: true, role: true, company: true, quote: true, rating: true },
     }).catch(() => []);
