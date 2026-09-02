@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getStripe } from "@/lib/stripe";
+import { nextInvoiceNumber } from "@/lib/invoices";
 
 export async function POST(req: Request) {
     try {
@@ -112,7 +113,7 @@ export async function POST(req: Request) {
         // Generate Invoice
         // Assuming there isn't an external PDF generation library requested immediately,
         // we store the data snapshot into DB so it can be viewed at /api/invoice/[id] or similar.
-        const invoiceNumber = `INV-${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, '0')}-${Math.floor(1000 + Math.random() * 9000)}`;
+        const invoiceNumber = await nextInvoiceNumber();
 
         await prisma.invoice.create({
             data: {

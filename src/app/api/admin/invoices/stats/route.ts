@@ -12,16 +12,17 @@ export async function GET(req: NextRequest) {
 
     const [allActive, paidThisMonth, overdueCount] = await Promise.all([
         prisma.invoice.findMany({
-            where: { status: { notIn: ["PAID", "CANCELLED", "REFUNDED"] } },
+            where: { status: { notIn: ["PAID", "CANCELLED", "REFUNDED", "VOID"] }, deletedAt: null },
             select: { balanceDue: true, dueDate: true, status: true },
         }),
         prisma.invoice.aggregate({
-            where: { status: "PAID", paidAt: { gte: startOfMonth } },
+            where: { status: "PAID", paidAt: { gte: startOfMonth }, deletedAt: null },
             _sum: { total: true },
         }),
         prisma.invoice.count({
             where: {
-                status: { notIn: ["PAID", "CANCELLED", "REFUNDED"] },
+                status: { notIn: ["PAID", "CANCELLED", "REFUNDED", "VOID"] },
+                deletedAt: null,
                 dueDate: { lt: now },
             },
         }),

@@ -1,5 +1,8 @@
 import { notFound } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import AdminInvoiceBar from "./AdminInvoiceBar";
 import { formatCurrency } from "@/lib/config";
 import Link from "next/link";
 import PrintButton from "./PrintButton";
@@ -24,15 +27,29 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
     if (!invoice) return notFound();
 
+    // Soft-deleted invoices stay reachable for admins (so they can restore or
+    // recreate them from this link) but are hidden from clients.
+    const session = await getServerSession(authOptions);
+    const isAdmin = Boolean(session?.user);
+    if (invoice.deletedAt && !isAdmin) return notFound();
+
     const booking = invoice.bookingOrder;
 
     const isPaid = invoice.status === "PAID";
-    const isCancelled = ["CANCELLED", "REFUNDED"].includes(invoice.status);
+    const isCancelled = ["CANCELLED", "REFUNDED", "VOID"].includes(invoice.status);
     const amountDue = invoice.balanceDue > 0 ? invoice.balanceDue : invoice.total;
     const canPay = !isPaid && !isCancelled && amountDue > 0;
 
     return (
         <div className="min-h-screen bg-[#f1f5f9] py-12 px-4 print:p-0 print:bg-white flex flex-col items-center">
+
+            {isAdmin && (
+                <AdminInvoiceBar
+                    invoiceId={invoice.id}
+                    invoiceNumber={invoice.invoiceNumber}
+                    isDeleted={Boolean(invoice.deletedAt)}
+                />
+            )}
 
             {/* Quick Actions (Hidden on Print) */}
             <div className="max-w-[800px] w-full mb-8 flex items-center justify-between print:hidden">

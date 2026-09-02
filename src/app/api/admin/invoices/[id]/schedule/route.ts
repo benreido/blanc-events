@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { addMonths } from "date-fns";
+import { nextInvoiceNumber } from "@/lib/invoices";
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const session = await getServerSession(authOptions);
@@ -30,8 +31,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     // Duplicate original N times, incrementing dates
     for (let i = 1; i <= occurrences; i++) {
-        // Generate a random ID avoiding collisions
-        const invoiceNumber = `INV-${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${Math.floor(10000 + Math.random() * 90000)}`;
+        // Sequential, atomically allocated — cannot collide.
+        const invoiceNumber = await nextInvoiceNumber();
         
         const newIssueDate = original.issueDate ? addMonths(new Date(original.issueDate), i) : new Date();
         const newDueDate = original.dueDate ? addMonths(new Date(original.dueDate), i) : null;

@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { calculateOrderMargin } from "@/lib/inventory";
+import { nextInvoiceNumber } from "@/lib/invoices";
 
 async function requireAdmin() {
     const session = await getServerSession(authOptions);
@@ -128,7 +129,7 @@ export async function PUT(req: NextRequest) {
         });
         if (!quote) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-        const invoiceNumber = `INV-${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, "0")}-${Math.floor(1000 + Math.random() * 9000)}`;
+        const invoiceNumber = await nextInvoiceNumber();
         const dueDate = new Date(quote.startDate);
         dueDate.setDate(dueDate.getDate() - 7); // Due 7 days before event
 

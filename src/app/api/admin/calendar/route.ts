@@ -24,11 +24,13 @@ export async function GET(req: NextRequest) {
             select: { id: true, clientName: true, clientEmail: true, clientPhone: true, venue: true, eventDate: true, eventType: true, startTime: true, endTime: true, status: true },
         }),
         prisma.invoice.findMany({
-            where: { eventDate: { gte: start, lt: end } },
+            where: {
+                deletedAt: null, eventDate: { gte: start, lt: end } },
             select: { id: true, clientName: true, clientEmail: true, invoiceNumber: true, eventDate: true, status: true, total: true, balanceDue: true },
         }),
         prisma.invoice.findMany({
             where: {
+                deletedAt: null,
                 dueDate: { gte: start, lt: end },
                 status: { notIn: ["PAID", "CANCELLED"] },
             },

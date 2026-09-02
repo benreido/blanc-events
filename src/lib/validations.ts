@@ -104,3 +104,46 @@ export const venueBookingSchema = z.object({
     notes: z.string().optional().default(""),
 });
 export type VenueBookingValues = z.infer<typeof venueBookingSchema>;
+
+// ─── Invoices ───
+export const invoiceItemSchema = z.object({
+    name: z.string().default(""),
+    description: z.string().optional().default(""),
+    quantity: z.number().int().min(0).default(1),
+    unitPrice: z.number().default(0),
+    discount: z.number().min(0).optional().default(0),
+    discountType: z.enum(["FIXED", "PERCENTAGE"]).optional().default("FIXED"),
+    taxable: z.boolean().optional().default(true),
+});
+
+export const invoiceAdjustmentSchema = z.object({
+    name: z.string().default(""),
+    description: z.string().optional().default(""),
+    amount: z.number(),
+    type: z.enum(["EXTRA", "LATE_FEE", "DISCOUNT", "CREDIT"]).optional().default("EXTRA"),
+});
+
+export const adminInvoiceSchema = z.object({
+    invoiceNumber: z.string().trim().min(1).max(64).optional().nullable(),
+    status: z.enum([
+        "DRAFT", "SENT", "VIEWED", "PARTIALLY_PAID",
+        "PAID", "OVERDUE", "CANCELLED", "REFUNDED", "VOID",
+    ]).optional(),
+    clientId: z.string().nullable().optional(),
+    clientName: z.string().trim().default(""),
+    clientEmail: z.union([z.string().trim().email("That client email doesn't look valid"), z.literal("")]).default(""),
+    clientAddress: z.string().optional().default(""),
+    dueDate: z.string().nullable().optional(),
+    eventDate: z.string().nullable().optional(),
+    notes: z.string().optional().default(""),
+    depositAmount: z.number().min(0).optional().default(0),
+    items: z.array(invoiceItemSchema).default([]),
+    adjustments: z.array(invoiceAdjustmentSchema).default([]),
+});
+
+export const invoicePaymentSchema = z.object({
+    amount: z.number().positive("Payment amount must be greater than zero"),
+    paymentMethod: z.enum(["STRIPE", "BACS", "CASH"]).optional().default("BACS"),
+    reference: z.string().optional().default(""),
+    paymentDate: z.string().optional().nullable(),
+});

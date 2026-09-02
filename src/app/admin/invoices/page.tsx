@@ -37,7 +37,52 @@ const statusColors: Record<string, string> = {
     OVERDUE: "bg-red-50 text-red-700",
     CANCELLED: "bg-slate-200 text-slate-500",
     REFUNDED: "bg-purple-50 text-purple-700",
+    VOID: "bg-slate-800 text-white",
 };
+
+// ─── Toasts (replaces blocking alert() dialogs) ───────────────────────────────
+interface ToastMsg {
+    id: string;
+    text: string;
+    tone: "success" | "error" | "info";
+    action?: { label: string; onClick: () => void };
+}
+
+function ToastStack({ toasts, dismiss }: { toasts: ToastMsg[]; dismiss: (id: string) => void }) {
+    if (!toasts.length) return null;
+    return (
+        <div className="fixed bottom-6 right-6 z-[60] flex flex-col gap-2 w-[min(92vw,26rem)]">
+            {toasts.map(t => (
+                <div
+                    key={t.id}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border text-sm animate-in slide-in-from-bottom-2 ${
+                        t.tone === "error" ? "bg-red-50 border-red-200 text-red-800"
+                        : t.tone === "success" ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                        : "bg-white border-slate-200 text-slate-700"
+                    }`}
+                >
+                    <span className="material-symbols-outlined text-[18px]">
+                        {t.tone === "error" ? "error" : t.tone === "success" ? "check_circle" : "info"}
+                    </span>
+                    <span className="flex-1 font-medium">{t.text}</span>
+                    {t.action && (
+                        <button
+                            onClick={() => { t.action!.onClick(); dismiss(t.id); }}
+                            className="font-bold uppercase tracking-widest text-xs px-3 py-1.5 rounded-lg bg-slate-900 text-white hover:bg-slate-700 transition-colors"
+                        >
+                            {t.action.label}
+                        </button>
+                    )}
+                    <button onClick={() => dismiss(t.id)} className="text-slate-400 hover:text-slate-600">
+                        <span className="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+type Notify = (text: string, opts?: { tone?: "success" | "error" | "info"; action?: { label: string; onClick: () => void }; duration?: number }) => void;
 
 // ─── Send Modal ───────────────────────────────────────────────────────────────
 function SendModal({ invoice, onClose, onDone }: { invoice: Invoice; onClose: () => void; onDone: () => void }) {
@@ -185,22 +230,36 @@ function PaymentModal({ invoice, onClose, onDone }: { invoice: Invoice; onClose:
 }
 
 // ─── Delete Confirm ───────────────────────────────────────────────────────────
-function DeleteModal({ invoice, onClose, onDone }: { invoice: Invoice; onClose: () => void; onDone: () => void }) {
+function DeleteModal({ invoice, permanent, onClose, onDone, notify }: { invoice: Invoice; permanent: boolean; onClose: () => void; onDone: (deleted: Invoice) => void; notify: Notify }) {
     const [deleting, setDeleting] = useState(false);
 
     async function handleDelete() {
         setDeleting(true);
-        await fetch(`/api/admin/invoices/${invoice.id}`, { method: "DELETE" });
-        onDone();
-        onClose();
+        try {
+            const res = await fetch(`/api/admin/invoices/${invoice.id}${permanent ? "?permanent=true" : ""}`, { method: "DELETE" });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                notify(data.error || "Could not delete this invoice.", { tone: "error", duration: 9000 });
+                return;
+            }
+            onDone(invoice);
+            onClose();
+        } finally {
+            setDeleting(false);
+        }
     }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
-                <h3 className="text-lg font-black tracking-tight mb-2">Delete invoice?</h3>
+                <h3 className="text-lg font-black tracking-tight mb-2">
+                    {permanent ? "Delete forever?" : "Move to Trash?"}
+                </h3>
                 <p className="text-sm text-slate-500 mb-6">
-                    <span className="font-semibold text-slate-700">{invoice.invoiceNumber}</span> for {invoice.clientName} will be permanently deleted. This cannot be undone.
+                    <span className="font-semibold text-slate-700">{invoice.invoiceNumber}</span> for {invoice.clientName}{" "}
+                    {permanent
+                        ? "will be permanently destroyed, along with its line items. This cannot be undone."
+                        : "will be moved to Trash. You can restore it at any time."}
                 </p>
                 <div className="flex gap-3">
                     <button onClick={onClose} className="flex-1 px-4 py-2.5 border border-slate-200 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancel</button>
@@ -209,7 +268,7 @@ function DeleteModal({ invoice, onClose, onDone }: { invoice: Invoice; onClose: 
                         disabled={deleting}
                         className="flex-1 px-4 py-2.5 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-bold transition-colors"
                     >
-                        {deleting ? "Deleting…" : "Yes, delete"}
+                        {deleting ? "Working…" : permanent ? "Delete forever" : "Move to Trash"}
                     </button>
                 </div>
             </div>
@@ -218,12 +277,12 @@ function DeleteModal({ invoice, onClose, onDone }: { invoice: Invoice; onClose: 
 }
 
 // ─── Schedule Modal ───────────────────────────────────────────────────────────
-function ScheduleModal({ invoice, onClose, onDone }: { invoice: Invoice; onClose: () => void; onDone: () => void }) {
+function ScheduleModal({ invoice, onClose, onDone, notify }: { invoice: Invoice; onClose: () => void; onDone: () => void; notify: Notify }) {
     const [occurrences, setOccurrences] = useState(11);
     const [scheduling, setScheduling] = useState(false);
 
     async function handleSchedule() {
-        if (occurrences < 1 || occurrences > 36) return alert("Occurrences must be between 1 and 36");
+        if (occurrences < 1 || occurrences > 36) return notify("Occurrences must be between 1 and 36", { tone: "error" });
         setScheduling(true);
         
         try {
@@ -236,11 +295,11 @@ function ScheduleModal({ invoice, onClose, onDone }: { invoice: Invoice; onClose
             const data = await res.json();
             if (!res.ok) throw new Error(data.error);
 
-            alert(`Successfully generated ${data.count} draft invoices.`);
+            notify(`Generated ${data.count} draft invoice${data.count === 1 ? "" : "s"}.`, { tone: "success" });
             onDone();
             onClose();
-        } catch (e: any) {
-            alert(e.message || "Failed to schedule invoices");
+        } catch (e: unknown) {
+            notify((e as Error).message || "Failed to schedule invoices", { tone: "error" });
         } finally {
             setScheduling(false);
         }
@@ -295,11 +354,27 @@ export default function AdminInvoicesPage() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("");
+    const [view, setView] = useState<"active" | "trash">("active");
+    const [trashCount, setTrashCount] = useState(0);
+    const [dateFrom, setDateFrom] = useState("");
+    const [dateTo, setDateTo] = useState("");
+    const [toasts, setToasts] = useState<ToastMsg[]>([]);
+
+    const dismissToast = useCallback((id: string) => {
+        setToasts(t => t.filter(x => x.id !== id));
+    }, []);
+
+    const notify = useCallback<Notify>((text, opts) => {
+        const id = Math.random().toString(36).slice(2);
+        setToasts(t => [...t, { id, text, tone: opts?.tone || "info", action: opts?.action }]);
+        const duration = opts?.duration ?? (opts?.action ? 9000 : 5000);
+        setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), duration);
+    }, []);
 
     // Modal state
     const [sendTarget, setSendTarget] = useState<Invoice | null>(null);
     const [payTarget, setPayTarget] = useState<Invoice | null>(null);
-    const [deleteTarget, setDeleteTarget] = useState<Invoice | null>(null);
+    const [deleteTarget, setDeleteTarget] = useState<{ invoice: Invoice; permanent: boolean } | null>(null);
     const [scheduleTarget, setScheduleTarget] = useState<Invoice | null>(null);
     const [duplicating, setDuplicating] = useState<string | null>(null);
 
@@ -308,11 +383,15 @@ export default function AdminInvoicesPage() {
         const query = new URLSearchParams();
         if (search) query.append("search", search);
         if (statusFilter) query.append("status", statusFilter);
+        if (dateFrom) query.append("from", dateFrom);
+        if (dateTo) query.append("to", dateTo);
+        query.append("view", view);
         const res = await fetch(`/api/admin/invoices?${query.toString()}`);
         const data = await res.json();
         setInvoices(data.invoices || []);
+        setTrashCount(data.trashCount ?? 0);
         setLoading(false);
-    }, [search, statusFilter]);
+    }, [search, statusFilter, view, dateFrom, dateTo]);
 
     const fetchStats = useCallback(async () => {
         const res = await fetch("/api/admin/invoices/stats");
@@ -340,20 +419,43 @@ export default function AdminInvoicesPage() {
             const res = await fetch(`/api/admin/invoices/${invoice.id}/duplicate`, { method: "POST" });
             const data = await res.json();
             if (!res.ok || !data.success) {
-                alert(data.error || "Failed to duplicate invoice");
+                notify(data.error || "Failed to duplicate invoice", { tone: "error" });
                 return;
             }
+            notify(`Created ${data.invoice.invoiceNumber} — opening it now.`, { tone: "success" });
             router.push(`/admin/invoices/${data.invoice.id}/edit`);
         } catch {
-            alert("Failed to duplicate invoice");
+            notify("Failed to duplicate invoice", { tone: "error" });
         } finally {
             setDuplicating(null);
         }
     }
 
+    const restoreInvoice = useCallback(async (invoice: Invoice, quiet = false) => {
+        const res = await fetch(`/api/admin/invoices/${invoice.id}/restore`, { method: "POST" });
+        if (!res.ok) {
+            notify(`Could not restore ${invoice.invoiceNumber}.`, { tone: "error" });
+            return;
+        }
+        if (!quiet) notify(`${invoice.invoiceNumber} restored.`, { tone: "success" });
+        refresh();
+    }, [notify]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    function handleDeleted(invoice: Invoice, permanent: boolean) {
+        refresh();
+        if (permanent) {
+            notify(`${invoice.invoiceNumber} deleted permanently.`, { tone: "success" });
+            return;
+        }
+        notify(`${invoice.invoiceNumber} moved to Trash.`, {
+            tone: "success",
+            action: { label: "Undo", onClick: () => restoreInvoice(invoice, true) },
+        });
+    }
+
     function isOverdue(invoice: Invoice) {
         if (!invoice.dueDate) return false;
-        if (["PAID", "CANCELLED", "REFUNDED"].includes(invoice.status)) return false;
+        if (["PAID", "CANCELLED", "REFUNDED", "VOID"].includes(invoice.status)) return false;
         return new Date(invoice.dueDate) < new Date();
     }
 
@@ -398,6 +500,32 @@ export default function AdminInvoicesPage() {
 
             {/* Table */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div className="px-4 pt-4 flex items-center gap-2 border-b border-slate-100">
+                    <button
+                        onClick={() => setView("active")}
+                        className={`px-4 py-2 text-sm font-bold rounded-t-lg border-b-2 transition-colors ${view === "active" ? "border-[#1F5C4B] text-[#1F5C4B]" : "border-transparent text-slate-400 hover:text-slate-600"}`}
+                    >
+                        Invoices
+                    </button>
+                    <button
+                        onClick={() => setView("trash")}
+                        className={`px-4 py-2 text-sm font-bold rounded-t-lg border-b-2 transition-colors flex items-center gap-2 ${view === "trash" ? "border-[#1F5C4B] text-[#1F5C4B]" : "border-transparent text-slate-400 hover:text-slate-600"}`}
+                    >
+                        <span className="material-symbols-outlined text-[16px]">delete</span>
+                        Trash
+                        {trashCount > 0 && (
+                            <span className="bg-slate-200 text-slate-700 text-[10px] font-bold px-2 py-0.5 rounded-full">{trashCount}</span>
+                        )}
+                    </button>
+                </div>
+
+                {view === "trash" && (
+                    <div className="px-4 py-3 bg-amber-50 border-b border-amber-100 text-xs text-amber-800 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[16px]">history</span>
+                        Deleted invoices are kept here and can be restored. Issued or paid invoices can&apos;t be destroyed — void them instead.
+                    </div>
+                )}
+
                 <div className="p-4 border-b border-slate-100 flex flex-col md:flex-row gap-4">
                     <div className="flex-1 relative">
                         <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
@@ -419,6 +547,32 @@ export default function AdminInvoicesPage() {
                             <option key={s} value={s}>{s.replace(/_/g, " ")}</option>
                         ))}
                     </select>
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="date"
+                            value={dateFrom}
+                            onChange={e => setDateFrom(e.target.value)}
+                            title="Issued from"
+                            className="py-2 px-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1F5C4B] bg-white"
+                        />
+                        <span className="text-slate-400 text-sm">to</span>
+                        <input
+                            type="date"
+                            value={dateTo}
+                            onChange={e => setDateTo(e.target.value)}
+                            title="Issued to"
+                            className="py-2 px-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#1F5C4B] bg-white"
+                        />
+                        {(dateFrom || dateTo || statusFilter || search) && (
+                            <button
+                                onClick={() => { setDateFrom(""); setDateTo(""); setStatusFilter(""); setSearch(""); }}
+                                title="Clear filters"
+                                className="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                            >
+                                <span className="material-symbols-outlined text-[18px]">filter_alt_off</span>
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -436,7 +590,7 @@ export default function AdminInvoicesPage() {
                             {loading ? (
                                 <tr><td colSpan={5} className="px-6 py-12 text-center text-slate-400">Loading invoices…</td></tr>
                             ) : invoices.length === 0 ? (
-                                <tr><td colSpan={5} className="px-6 py-12 text-center text-slate-400">No invoices found.</td></tr>
+                                <tr><td colSpan={5} className="px-6 py-12 text-center text-slate-400">{view === "trash" ? "Trash is empty." : "No invoices found."}</td></tr>
                             ) : invoices.map(invoice => {
                                 const status = displayStatus(invoice);
                                 const overdue = isOverdue(invoice);
@@ -474,6 +628,25 @@ export default function AdminInvoicesPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center justify-end gap-1">
+                                                {view === "trash" ? (
+                                                    <>
+                                                        <button
+                                                            onClick={() => restoreInvoice(invoice)}
+                                                            title="Restore invoice"
+                                                            className="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                                                        >
+                                                            <span className="material-symbols-outlined text-[18px]">restore_from_trash</span>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setDeleteTarget({ invoice, permanent: true })}
+                                                            title="Delete forever"
+                                                            className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                                                        >
+                                                            <span className="material-symbols-outlined text-[18px]">delete_forever</span>
+                                                        </button>
+                                                    </>
+                                                ) : (
+                                                <>
                                                 {/* Send */}
                                                 <button
                                                     onClick={() => setSendTarget(invoice)}
@@ -534,14 +707,16 @@ export default function AdminInvoicesPage() {
                                                     <span className="material-symbols-outlined text-[18px]">open_in_new</span>
                                                 </Link>
 
-                                                {/* Delete */}
+                                                {/* Delete (moves to Trash) */}
                                                 <button
-                                                    onClick={() => setDeleteTarget(invoice)}
-                                                    title="Delete"
+                                                    onClick={() => setDeleteTarget({ invoice, permanent: false })}
+                                                    title="Move to Trash"
                                                     className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
                                                 >
                                                     <span className="material-symbols-outlined text-[18px]">delete</span>
                                                 </button>
+                                                </>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
@@ -560,11 +735,19 @@ export default function AdminInvoicesPage() {
                 <PaymentModal invoice={payTarget} onClose={() => setPayTarget(null)} onDone={refresh} />
             )}
             {deleteTarget && (
-                <DeleteModal invoice={deleteTarget} onClose={() => setDeleteTarget(null)} onDone={refresh} />
+                <DeleteModal
+                    invoice={deleteTarget.invoice}
+                    permanent={deleteTarget.permanent}
+                    notify={notify}
+                    onClose={() => setDeleteTarget(null)}
+                    onDone={(inv) => handleDeleted(inv, deleteTarget.permanent)}
+                />
             )}
             {scheduleTarget && (
-                <ScheduleModal invoice={scheduleTarget} onClose={() => setScheduleTarget(null)} onDone={refresh} />
+                <ScheduleModal invoice={scheduleTarget} onClose={() => setScheduleTarget(null)} onDone={refresh} notify={notify} />
             )}
+
+            <ToastStack toasts={toasts} dismiss={dismissToast} />
         </div>
     );
 }

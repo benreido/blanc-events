@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
 
         const invoices = await prisma.invoice.findMany({
             where: {
+                deletedAt: null,
                 dueDate: { gte: dayStart, lte: dayEnd },
                 status: { notIn: ["PAID", "CANCELLED", "REFUNDED"] },
                 balanceDue: { gt: 0 },

@@ -16,6 +16,7 @@ export async function GET() {
         const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
         const result = await prisma.invoice.aggregate({
             where: {
+                deletedAt: null,
                 status: "PAID",
                 paidAt: { gte: start, lt: end },
             },
@@ -31,7 +32,8 @@ export async function GET() {
 
     // Outstanding balances
     const outstanding = await prisma.invoice.aggregate({
-        where: { status: { notIn: ["PAID", "CANCELLED", "REFUNDED"] }, balanceDue: { gt: 0 } },
+        where: {
+            deletedAt: null, status: { notIn: ["PAID", "CANCELLED", "REFUNDED"] }, balanceDue: { gt: 0 } },
         _sum: { balanceDue: true },
         _count: true,
     });
@@ -39,6 +41,7 @@ export async function GET() {
     // Overdue invoices
     const overdue = await prisma.invoice.findMany({
         where: {
+            deletedAt: null,
             status: { notIn: ["PAID", "CANCELLED", "REFUNDED"] },
             dueDate: { lt: now },
             balanceDue: { gt: 0 },
@@ -67,6 +70,7 @@ export async function GET() {
     const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
     const upcomingEvents = await prisma.invoice.findMany({
         where: {
+            deletedAt: null,
             eventDate: { gte: now, lte: thirtyDaysFromNow },
             status: { notIn: ["CANCELLED", "REFUNDED"] },
         },
@@ -88,14 +92,16 @@ export async function GET() {
 
     // Summary totals (all time)
     const allTimePaid = await prisma.invoice.aggregate({
-        where: { status: "PAID" },
+        where: {
+            deletedAt: null, status: "PAID" },
         _sum: { total: true },
         _count: true,
     });
 
     const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const thisMonthRevenue = await prisma.invoice.aggregate({
-        where: { status: "PAID", paidAt: { gte: currentMonthStart } },
+        where: {
+            deletedAt: null, status: "PAID", paidAt: { gte: currentMonthStart } },
         _sum: { total: true },
     });
 

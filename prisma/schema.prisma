@@ -387,7 +387,7 @@ model Invoice {
   id               String       @id @default(cuid())
   bookingOrderId   String?      @unique
   invoiceNumber    String       @unique
-  status           String       @default("DRAFT") // DRAFT, SENT, VIEWED, PARTIALLY_PAID, PAID, OVERDUE, CANCELLED, REFUNDED
+  status           String       @default("DRAFT") // DRAFT, SENT, VIEWED, PARTIALLY_PAID, PAID, OVERDUE, CANCELLED, REFUNDED, VOID
   issueDate        DateTime     @default(now())
   dueDate          DateTime?
   eventDate        DateTime?
@@ -413,6 +413,9 @@ model Invoice {
   contractId       String?
   contract         RecurringContract? @relation(fields: [contractId], references: [id], onDelete: SetNull)
 
+  deletedAt        DateTime?    // Soft delete: non-null = in Trash, recoverable
+  voidedAt         DateTime?    // Issued invoices are voided, never destroyed
+
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
   bookingOrder     BookingOrder? @relation(fields: [bookingOrderId], references: [id], onDelete: SetNull)
@@ -428,6 +431,7 @@ model Invoice {
   @@index([invoiceNumber])
   @@index([clientId])
   @@index([contractId])
+  @@index([deletedAt])
 }
 
 model InvoiceItem {
@@ -547,4 +551,14 @@ model VenueBooking {
 
   @@index([status])
   @@index([eventDate])
+}
+
+/// Atomic sequential invoice numbering. One row per scope (e.g. the year "2026").
+/// Allocated inside a transaction so concurrent saves can never collide.
+model InvoiceCounter {
+  id        String   @id @default(cuid())
+  scope     String   @unique
+  lastValue Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

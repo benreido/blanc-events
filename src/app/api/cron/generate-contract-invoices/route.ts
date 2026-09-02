@@ -1,14 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendContractInvoice } from "@/lib/email";
+import { nextInvoiceNumber } from "@/lib/invoices";
 
-function generateInvoiceNumber(): string {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const rand = Math.floor(1000 + Math.random() * 9000);
-    return `INV-${year}${month}-${rand}`;
-}
 
 function advanceByOneMonth(date: Date, billingDay: number): Date {
     const d = new Date(date);
@@ -69,7 +63,7 @@ export async function GET(req: NextRequest) {
             dueDate.setDate(dueDate.getDate() + 14); // 14-day payment terms
 
             const month = contract.nextBillingDate.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
-            const invoiceNumber = generateInvoiceNumber();
+            const invoiceNumber = await nextInvoiceNumber();
 
             const invoice = await prisma.invoice.create({
                 data: {
