@@ -250,77 +250,28 @@
     background: white !important;
   }
 
-  /* Invoice document – force single page */
+  /* Print the invoice at its natural, on-screen size.
+     Previously this block crushed every margin, shrank the type and set
+     max-height + overflow:hidden, which squashed the layout AND silently
+     clipped anything past one page. Content now flows onto a second page. */
   #invoice-document {
     width: 210mm !important;
     max-width: 210mm !important;
     min-height: 0 !important;
-    max-height: 287mm !important;
-    padding: 10mm 12mm !important;
+    padding: 12mm !important;
     margin: 0 auto !important;
     box-shadow: none !important;
     border-radius: 0 !important;
+  }
+
+  /* Don't split a line item across a page break, and repeat the table header
+     on each page of a multi-page invoice. */
+  #invoice-document tr {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    overflow: hidden !important;
-    font-size: 11px !important;
   }
-
-  /* Compact header */
-  #invoice-document h1 {
-    font-size: 22px !important;
-    margin-bottom: 2px !important;
-  }
-
-  #invoice-document h2 {
-    font-size: 22px !important;
-  }
-
-  /* Tighten all spacing */
-  #invoice-document .mb-16 { margin-bottom: 10px !important; }
-  #invoice-document .mb-12 { margin-bottom: 8px !important; }
-  #invoice-document .mb-8  { margin-bottom: 6px !important; }
-  #invoice-document .pb-12 { padding-bottom: 6px !important; }
-  #invoice-document .pt-16 { padding-top: 8px !important; }
-  #invoice-document .pt-8  { padding-top: 6px !important; }
-  #invoice-document .mt-8  { margin-top: 6px !important; }
-  #invoice-document .mt-auto { margin-top: 4px !important; }
-
-  /* Compact table rows */
-  #invoice-document table th {
-    padding-top: 4px !important;
-    padding-bottom: 4px !important;
-    font-size: 8px !important;
-  }
-  #invoice-document table td {
-    padding-top: 5px !important;
-    padding-bottom: 5px !important;
-    font-size: 11px !important;
-  }
-  #invoice-document table td p {
-    font-size: 9px !important;
-    margin-top: 1px !important;
-  }
-
-  /* Smaller totals section */
-  #invoice-document .text-xl {
-    font-size: 15px !important;
-  }
-
-  /* Compact footer */
-  #invoice-document .text-xs {
-    font-size: 9px !important;
-  }
-
-  /* Fix flexbox stretching */
-  #invoice-document .flex-1 {
-    flex: 0 1 auto !important;
-  }
-
-  /* No page breaks anywhere inside */
-  #invoice-document * {
-    page-break-inside: avoid !important;
-    break-inside: avoid !important;
+  #invoice-document thead {
+    display: table-header-group !important;
   }
 }
 

@@ -9,45 +9,45 @@ import PrintButton from "./PrintButton";
 import PayNowButton from "./PayNowButton";
 
 export default async function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
+ const { id } = await params;
 
     // First try by Invoice ID directly
-    let invoice = await prisma.invoice.findUnique({
-        where: { id },
-        include: { items: { orderBy: { sortOrder: "asc" } }, adjustments: true, bookingOrder: { include: { lineItems: { include: { equipmentItem: true, package: true } }, serviceAddons: { include: { serviceAddon: true } }, djServices: { include: { djService: true } } } } }
+ let invoice = await prisma.invoice.findUnique({
+ where: { id },
+ include: { items: { orderBy: { sortOrder: "asc" } }, adjustments: true, bookingOrder: { include: { lineItems: { include: { equipmentItem: true, package: true } }, serviceAddons: { include: { serviceAddon: true } }, djServices: { include: { djService: true } } } } }
     });
 
     // If not found, try by booking order ID for backwards compatibility
-    if (!invoice) {
-        invoice = await prisma.invoice.findUnique({
-            where: { bookingOrderId: id },
-            include: { items: { orderBy: { sortOrder: "asc" } }, adjustments: true, bookingOrder: { include: { lineItems: { include: { equipmentItem: true, package: true } }, serviceAddons: { include: { serviceAddon: true } }, djServices: { include: { djService: true } } } } }
+ if (!invoice) {
+ invoice = await prisma.invoice.findUnique({
+ where: { bookingOrderId: id },
+ include: { items: { orderBy: { sortOrder: "asc" } }, adjustments: true, bookingOrder: { include: { lineItems: { include: { equipmentItem: true, package: true } }, serviceAddons: { include: { serviceAddon: true } }, djServices: { include: { djService: true } } } } }
         });
     }
 
-    if (!invoice) return notFound();
+ if (!invoice) return notFound();
 
     // Soft-deleted invoices stay reachable for admins (so they can restore or
     // recreate them from this link) but are hidden from clients.
-    const session = await getServerSession(authOptions);
-    const isAdmin = Boolean(session?.user);
-    if (invoice.deletedAt && !isAdmin) return notFound();
+ const session = await getServerSession(authOptions);
+ const isAdmin = Boolean(session?.user);
+ if (invoice.deletedAt && !isAdmin) return notFound();
 
-    const booking = invoice.bookingOrder;
+ const booking = invoice.bookingOrder;
 
-    const isPaid = invoice.status === "PAID";
-    const isCancelled = ["CANCELLED", "REFUNDED", "VOID"].includes(invoice.status);
-    const amountDue = invoice.balanceDue > 0 ? invoice.balanceDue : invoice.total;
-    const canPay = !isPaid && !isCancelled && amountDue > 0;
+ const isPaid = invoice.status === "PAID";
+ const isCancelled = ["CANCELLED", "REFUNDED", "VOID"].includes(invoice.status);
+ const amountDue = invoice.balanceDue > 0 ? invoice.balanceDue : invoice.total;
+ const canPay = !isPaid && !isCancelled && amountDue > 0;
 
-    return (
+ return (
         <div className="min-h-screen bg-[#f1f5f9] py-12 px-4 print:p-0 print:bg-white flex flex-col items-center">
 
             {isAdmin && (
                 <AdminInvoiceBar
-                    invoiceId={invoice.id}
-                    invoiceNumber={invoice.invoiceNumber}
-                    isDeleted={Boolean(invoice.deletedAt)}
+ invoiceId={invoice.id}
+ invoiceNumber={invoice.invoiceNumber}
+ isDeleted={Boolean(invoice.deletedAt)}
                 />
             )}
 
@@ -90,10 +90,10 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             )}
 
             {/* A4 Document Area */}
-            <div id="invoice-document" className="bg-white w-full max-w-[800px] shadow-lg print:shadow-none min-h-[1131px] print:min-h-0 print:max-h-[296mm] mx-auto p-12 md:p-16 print:p-[12mm] relative flex flex-col rounded-sm print:rounded-none print:overflow-hidden">
+            <div id="invoice-document" className="bg-white w-full max-w-[800px] shadow-lg print:shadow-none min-h-[1131px] print:min-h-0 mx-auto p-12 md:p-16 print:p-[12mm] relative flex flex-col rounded-sm print:rounded-none">
 
                 {/* Header */}
-                <div className="flex justify-between items-start mb-16 print:mb-3 border-b border-[#e2e8f0] pb-12 print:pb-3">
+                <div className="flex justify-between items-start mb-16 border-b border-[#e2e8f0] pb-12">
                     <div>
                         <h1 className="text-4xl font-black tracking-tighter text-[#123A2F] mb-1">Blanc. Events</h1>
                         <p className="text-sm text-[#64748b] mb-6">Premium AV & Event Production</p>
@@ -117,7 +117,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {/* Billed To */}
-                <div className="mb-12 print:mb-3 flex justify-between">
+                <div className="mb-12 flex justify-between">
                     <div>
                         <p className="text-[10px] font-black tracking-widest uppercase text-[#94a3b8] mb-3">Billed To</p>
                         <h3 className="font-bold text-lg text-[#0f172a] mb-1">{invoice.clientName}</h3>
@@ -145,7 +145,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {/* Line Items */}
-                <div className="print:flex-none mb-16 print:mb-3">
+                <div className="mb-16">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b-2 border-[#0f172a]">
@@ -158,11 +158,11 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                         <tbody className="divide-y divide-[#f1f5f9] text-sm">
                             {/* Custom Invoice Items */}
                             {invoice.items && invoice.items.length > 0 && invoice.items.map((it: any) => {
-                                let lineTotal = it.quantity * it.unitPrice;
-                                if (it.discountType === "FIXED") lineTotal -= it.discount;
-                                else if (it.discountType === "PERCENTAGE") lineTotal -= lineTotal * (it.discount / 100);
+ let lineTotal = it.quantity * it.unitPrice;
+ if (it.discountType === "FIXED") lineTotal -= it.discount;
+ else if (it.discountType === "PERCENTAGE") lineTotal -= lineTotal * (it.discount / 100);
 
-                                return (
+ return (
                                     <tr key={it.id}>
                                         <td className="py-4 text-[#0f172a]">
                                             <span className="font-bold">{it.name}</span>
@@ -222,7 +222,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {/* Totals */}
-                <div className="flex justify-end pt-8 print:pt-2 border-t-2 border-[#0f172a]">
+                <div className="flex justify-end pt-8 border-t-2 border-[#0f172a]">
                     <div className="w-64 space-y-3">
                         <div className="flex justify-between text-sm text-[#475569]">
                             <span>Subtotal</span>
@@ -264,14 +264,14 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
                 </div>
 
                 {invoice.notes && (
-                    <div className="mt-8 print:mt-2 pt-8 print:pt-2 border-t border-[#f1f5f9]">
+                    <div className="mt-8 pt-8 border-t border-[#f1f5f9]">
                         <p className="text-[10px] font-black tracking-widest uppercase text-[#94a3b8] mb-2">Notes & Terms</p>
                         <p className="text-sm text-[#475569] whitespace-pre-wrap">{invoice.notes}</p>
                     </div>
                 )}
 
                 {/* Footer Notes */}
-                <div className="mt-auto print:mt-2 pt-16 print:pt-2 border-t border-[#e2e8f0] text-xs text-[#64748b] text-center">
+                <div className="mt-auto pt-16 border-t border-[#e2e8f0] text-xs text-[#64748b] text-center">
                     <p className="font-bold text-[#0f172a] mb-1">Payment Details</p>
                     <p>Bank Transfer: Blanc Collective LTD | Sort: 04-00-05 | Acct: 95990226</p>
                     <p className="mt-4">Payment is required 7 days prior to event commencement. Standard terms and conditions apply.</p>
