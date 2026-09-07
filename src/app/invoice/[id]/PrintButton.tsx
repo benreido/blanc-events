@@ -17,9 +17,6 @@ export default function PrintButton({ invoiceNumber, clientName }: { invoiceNumb
             return;
         }
 
-        // Tighten the document for the physical render.
-        element.classList.add("pdf-rendering");
-
         try {
             // html2canvas-pro (not the original html2canvas) is required: Tailwind v4
             // emits oklch() colours, which the original parser rejects outright.
@@ -57,8 +54,6 @@ export default function PrintButton({ invoiceNumber, clientName }: { invoiceNumb
             console.error("PDF generation failed", e);
             setError("Couldn't generate the PDF. Use Print → Save as PDF instead.");
         } finally {
-            // Always restore, even when the render fails.
-            element.classList.remove("pdf-rendering");
             setDownloading(false);
         }
     };

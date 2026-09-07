@@ -324,39 +324,6 @@
   }
 }
 
-/* PDF export rendering class (html2canvas-pro) – mirrors print compaction */
-.pdf-rendering {
-  padding: 10mm 12mm !important;
-  min-height: 0 !important;
-  font-size: 11px !important;
-}
-
-.pdf-rendering .mb-16 { margin-bottom: 10px !important; }
-.pdf-rendering .mb-12 { margin-bottom: 8px !important; }
-.pdf-rendering .mb-8  { margin-bottom: 6px !important; }
-.pdf-rendering .pb-12 { padding-bottom: 6px !important; }
-.pdf-rendering .pt-16 { padding-top: 8px !important; }
-.pdf-rendering .pt-8  { padding-top: 6px !important; }
-.pdf-rendering .mt-8  { margin-top: 6px !important; }
-.pdf-rendering .mt-auto { margin-top: 4px !important; }
-
-.pdf-rendering h1 { font-size: 22px !important; margin-bottom: 2px !important; }
-.pdf-rendering h2 { font-size: 22px !important; }
-
-.pdf-rendering table th {
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
-  font-size: 8px !important;
-}
-.pdf-rendering table td {
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
-  font-size: 11px !important;
-}
-.pdf-rendering table td p {
-  font-size: 9px !important;
-  margin-top: 1px !important;
-}
-
-.pdf-rendering .text-xl { font-size: 15px !important; }
-.pdf-rendering .flex-1 { flex: 0 1 auto !important; }
+/* (The old .pdf-rendering compaction hack was removed: it crushed spacing to force
+   a single page back when PDF export had no pagination. Export now paginates, so the
+   PDF renders at the invoice's natural, A4-proportioned size.) */
