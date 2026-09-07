@@ -324,7 +324,7 @@
   }
 }
 
-/* html2pdf.js rendering class – mirrors print compaction */
+/* PDF export rendering class (html2canvas-pro) – mirrors print compaction */
 .pdf-rendering {
   padding: 10mm 12mm !important;
   min-height: 0 !important;
