@@ -124,7 +124,8 @@ export const invoiceAdjustmentSchema = z.object({
 });
 
 export const adminInvoiceSchema = z.object({
-    invoiceNumber: z.string().trim().min(1).max(64).optional().nullable(),
+    // "" means "auto-generate" — normalizeInvoiceNumber() turns it into null.
+    invoiceNumber: z.string().trim().max(64).optional().nullable(),
     status: z.enum([
         "DRAFT", "SENT", "VIEWED", "PARTIALLY_PAID",
         "PAID", "OVERDUE", "CANCELLED", "REFUNDED", "VOID",

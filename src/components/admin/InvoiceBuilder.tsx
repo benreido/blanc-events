@@ -35,6 +35,7 @@ interface SavedClient {
 export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+    const [saveError, setSaveError] = useState<string>("");
 
     // Form State
     const [invoiceNumber, setInvoiceNumber] = useState(initialData?.invoiceNumber || "");
@@ -202,6 +203,21 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
         setAdjustments([...adjustments, { id: crypto.randomUUID(), name: "", description: "", amount: 0, type: "EXTRA" }]);
     };
 
+    /** Renders a string error, or a Zod fieldErrors object, as readable text. */
+    function formatSaveError(err: unknown): string {
+        if (!err) return "Something went wrong saving this invoice.";
+        if (typeof err === "string") return err;
+        if (typeof err === "object") {
+            const parts = Object.entries(err as Record<string, unknown>).map(([field, msgs]) => {
+                const label = field.replace(/([A-Z])/g, " $1").replace(/^./, c => c.toUpperCase());
+                const text = Array.isArray(msgs) ? msgs.join(", ") : String(msgs);
+                return `${label}: ${text}`;
+            });
+            if (parts.length) return parts.join(" · ");
+        }
+        return "Something went wrong saving this invoice.";
+    }
+
     const handleSave = async () => {
         setLoading(true);
         const payload = {
@@ -211,6 +227,7 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
             ...totals
         };
 
+        setSaveError("");
         const url = initialData?.id ? `/api/admin/invoices/${initialData.id}` : "/api/admin/invoices";
         const method = initialData?.id ? "PUT" : "POST";
 
@@ -223,17 +240,30 @@ export default function InvoiceBuilder({ initialData }: { initialData?: any }) {
             if (data.success) {
                 router.push("/admin/invoices");
             } else {
-                alert("Error saving invoice: " + data.error);
+                setSaveError(formatSaveError(data.error));
                 setLoading(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
             }
-        } catch (e) {
-            alert("Error saving invoice");
+        } catch {
+            setSaveError("Couldn't reach the server. Check your connection and try again.");
             setLoading(false);
         }
     };
 
     return (
         <div className="max-w-6xl mx-auto space-y-8 pb-32">
+            {saveError && (
+                <div className="bg-red-50 border border-red-200 rounded-xl px-5 py-4 flex items-start gap-3">
+                    <span className="material-symbols-outlined text-red-500 text-xl">error</span>
+                    <div className="flex-1">
+                        <p className="font-bold text-red-800 text-sm">Couldn&apos;t save this invoice</p>
+                        <p className="text-red-700 text-sm mt-0.5">{saveError}</p>
+                    </div>
+                    <button onClick={() => setSaveError("")} className="text-red-400 hover:text-red-600">
+                        <span className="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                </div>
+            )}
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-black tracking-tighter">{initialData ? "Edit Invoice" : "Create Custom Invoice"}</h1>
